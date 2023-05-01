@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS school(
     id VARCHAR(100) PRIMARY KEY,
     name VARCHAR(200),
     district VARCHAR(100),
-    image_key VARCHAR(200),
+    imageKey VARCHAR(200),
     description VARCHAR(1000),
     status ENUM('active', 'archived'),
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
