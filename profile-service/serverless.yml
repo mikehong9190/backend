@@ -1,0 +1,16 @@
+service: swiirl-profile
+
+projectDir: ../
+frameworkVersion: "3"
+
+custom:
+  region: ${file(../serverless-config.json):region}
+  stage: ${file(../serverless-config.json):stage}
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: ${self:custom.region}
+  stage: ${self:custom.stage}
+  profile: default
+  lambdaHashingVersion: 20201221

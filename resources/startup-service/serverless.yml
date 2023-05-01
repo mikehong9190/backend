@@ -1,0 +1,59 @@
+service: swiirl-root
+
+projectDir: ../
+frameworkVersion: "3"
+
+custom:
+  region: ${file(../../serverless-config.json):region}
+  stage: ${file(../../serverless-config.json):stage}
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: ${self:custom.region}
+  stage: ${self:custom.stage}
+  profile: default
+  lambdaHashingVersion: 20201221
+  httpApi:
+    cors:
+      allowedOrigins:
+        - "*"
+      allowedMethods:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+      allowedHeaders:
+        - "*"
+
+functions:
+  startup-service:
+    handler: index.handler
+    events:
+      - httpApi:
+          path: /
+          method: get
+
+resources:
+  Outputs:
+    ServerlessDeploymentBucketName:
+      Value: !Ref ServerlessDeploymentBucket
+      Export:
+        Name: SwiirlServerlessDeploymentBucketName
+    SwiirlHttpApiId:
+      Description: Id of the HTTP API
+      Value: !Ref HttpApi
+      Export:
+        Name: SwiirlHttpApiId-${self:custom.stage}
+    SwiirlHttpApiUrl:
+      Description: URL of the HTTP API
+      Value: !Join
+        - ""
+        - - "https://"
+          - !Ref HttpApi
+          - .execute-api.
+          - !Ref "AWS::Region"
+          - .
+          - !Ref "AWS::URLSuffix"
+      Export:
+        Name: SwiirlUrl-${self:custom.stage}
