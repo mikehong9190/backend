@@ -1,0 +1,17 @@
+# Node Modules
+node_modules/
+
+# DynamoDB Local files
+.dynamodb/
+
+# DS Dstore files
+.DS_Store
+
+# 
+package-lock.json
+
+#
+*.webpack
+
+#
+.serverless/
