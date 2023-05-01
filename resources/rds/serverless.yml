@@ -1,1 +1,31 @@
-service: swiirl-rds
+service: sg-swiirl-db-dev
+
+frameworkVersion: "3"
+
+projectDir: ../
+
+custom:
+  region: ${file(../../serverless-config.json):region}
+  stage: ${file(../../serverless-config.json):stage}
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  region: ${self:custom.region}
+  stage: ${self:custom.stage}
+  lambdaHashingVersion: 20201221
+
+resources:
+  Resources:
+    # RDS instance
+    ProductDatabase:
+      Type: AWS::RDS::DBInstance
+      Properties:
+        AllocatedStorage: 5
+        DBInstanceClass: db.t3.micro
+        DBName: swiirl_db_dev
+        Engine: mysql
+        EngineVersion: 8.0.32
+        MasterUsername: admin
+        MasterUserPassword: $SwiirlMaster123
+        PubliclyAccessible: true
