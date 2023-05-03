@@ -1,6 +1,6 @@
 CREATE DATABASE IF NOT EXISTS swiirl_db;
 USE swiirl_db;
---changeset punit: 1
+-- changeset punit: 1
 CREATE TABLE IF NOT EXISTS school(
     id VARCHAR(100) PRIMARY KEY,
     name VARCHAR(200),
@@ -54,6 +54,6 @@ CREATE table IF NOT EXISTS image(
     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (initiativeId) REFERENCES initiative(id)
 );
---changeset punit: 2
+-- changeset punit: 2
 ALTER TABLE user
 ADD COLUMN bio VARCHAR(1000);
