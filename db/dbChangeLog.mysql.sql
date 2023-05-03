@@ -54,3 +54,6 @@ CREATE table IF NOT EXISTS image(
     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (initiativeId) REFERENCES initiative(id)
 );
+--changeset punit: 2
+ALTER TABLE user
+ADD COLUMN bio VARCHAR(1000);
