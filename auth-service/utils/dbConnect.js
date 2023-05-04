@@ -8,9 +8,11 @@ export const pool  = mysql.createPool({
   database : process.env.DB_NAME
 });
 
-export const dbExecuteQuery = (query) => {
+export const dbExecuteQuery = (query,params=null) => {
   return new Promise((resolve, reject)=>{
-    pool.query(query,  (error, results)=>{
+    pool.query({
+      sql:query,
+    values:params},  (error, results)=>{
         if(error){
             return reject(error);
         }
