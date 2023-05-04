@@ -3,7 +3,7 @@ import { nanoid } from 'nanoid';
 import LOGGER from './utils/logger.js';
 import sendResponse from './utils/sendResponse.js';
 import { loginSchema } from './utils/schema.js';
-import { dbExecuteQuery } from './utils/dbConnect.js';
+import { dbExecuteQuery, pool } from './utils/dbConnect.js';
 
 const componentName = 'auth-service/login';
 
@@ -42,7 +42,7 @@ export const handler = async (event) => {
     // finally return response
     return sendResponse(reqId, 200, {
       message: 'success',
-      data: {}
+      data: dbResp
     });
 
   } catch (error) {

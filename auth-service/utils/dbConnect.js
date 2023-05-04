@@ -1,6 +1,6 @@
 import mysql from 'mysql';
 
-const pool  = mysql.createPool({
+export const pool  = mysql.createPool({
   connectionLimit : 2,
   host     : process.env.DB_HOST,
   user     : process.env.DB_USERNAME,
