@@ -3,7 +3,7 @@ import { nanoid } from 'nanoid';
 import LOGGER from './utils/logger.js';
 import sendResponse from './utils/sendResponse.js';
 import { loginSchema } from './utils/schema.js';
-import { dbExecuteQuery, pool } from './utils/dbConnect.js';
+import { dbExecuteQuery } from './utils/dbConnect.js';
 
 const componentName = 'auth-service/login';
 
@@ -12,10 +12,10 @@ export const handler = async (event) => {
   const reqId = nanoid();
   try {
     LOGGER.info(reqId, componentName, "Event received", event);
-    const { body } = JSON.parse(event.body);
+    const body = JSON.parse(event.body);
 
     // step-1: validate request body,
-    const { error } = await loginSchema.validate(body, { abortEarly: false });
+    const { error, value } = await loginSchema.validate(body, { abortEarly: false });
     if (error) {
       LOGGER.error(reqId, componentName, `Invalid request body`, error);
       const err = {
@@ -27,17 +27,14 @@ export const handler = async (event) => {
 
     // ############ Main business logic ############
     // step-2: write logic here
+    // TODO: <remove TODO once done>
+    // query db with email, if user found, cross-check hashed password, if correct, send the access token,
+    // else, send appropriate message like - password incorrect, or user not found.
     const dbResp  = await dbExecuteQuery('SELECT * FROM user');
     LOGGER.info(reqId, componentName, "query results", dbResp);
 
 
     // ############ Handler end ############
-    // end all mysql connections
-    pool.end(function (err) {
-      if(err){
-        LOGGER.error(reqId, componentName, "could not end db connection pool", err.message);
-      }
-    });
 
     // finally return response
     return sendResponse(reqId, 200, {
