@@ -18,7 +18,7 @@ provider:
   region: ${self:custom.region}
   stage: ${self:custom.stage}
   profile: swiirl
-  timeout: 200
+  timeout: 15
   environment:
     DB_HOST: ${env:DB_HOST}
     DB_USERNAME: ${env:DB_USERNAME}
@@ -34,6 +34,12 @@ functions:
     events:
       - httpApi:
           path: /v1/login
+          method: post
+  validateEmail:
+    handler: validateEmail.handler
+    events:
+      - httpApi:
+          path: /v1/validate-email
           method: post
   signup:
     handler: signup.handler

@@ -16,7 +16,6 @@ export const loginSchema = Joi.object({
 })
 .options({ allowUnknown: false });
 
-
 export const signupSchema = Joi.object({
   firstname: Joi.string().required(),
   lastname: Joi.string().required(),
@@ -39,3 +38,7 @@ export const signupSchema = Joi.object({
   
 })
 .options({ allowUnknown: false });
+
+export const validateEmailSchema = Joi.object({
+  emailId: Joi.string().email().required()
+}).options({ allowUnknown: false })
