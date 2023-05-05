@@ -34,7 +34,7 @@ export const handler = async (event) => {
     const searchQuery = `SELECT id, name, district FROM school WHERE name LIKE '%${searchText}%' AND status = 'active' ORDER BY createdAt DESC LIMIT ${limit} OFFSET ${offset}`;
 
     LOGGER.info(reqId, componentName, 'seach query to be executed', searchQuery);
-    const [dbResp] = await dbExecuteQuery(searchQuery);
+    const dbResp = await dbExecuteQuery(searchQuery);
 
 
     // ############ Handler end ############
