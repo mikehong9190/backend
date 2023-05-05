@@ -21,7 +21,10 @@ export const signupSchema = Joi.object({
   firstname: Joi.string().required(),
   lastname: Joi.string().required(),
   emailId: Joi.string().email().required(),
-  schoolId:Joi.string().required(),
+  createSchool:Joi.bool().required(),
+  districtName:Joi.string().optional(),
+  schoolName:Joi.string().optional(),
+  schoolId:Joi.string().optional(),
   password: Joi.string()
             .min(8)
             .max(20)

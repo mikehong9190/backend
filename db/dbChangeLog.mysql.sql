@@ -56,3 +56,6 @@ CREATE table IF NOT EXISTS image(
 -- changeset punit: 2
 ALTER TABLE user
 ADD COLUMN bio VARCHAR(1000);
+-- changeset punit: 3
+ALTER TABLE user
+MODIFY COLUMN status ENUM('active', 'archive', 'pending');

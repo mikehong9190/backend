@@ -17,6 +17,8 @@ export const handler = async (event) => {
     const body = await JSON.parse(event.body);
     const itemId = nanoid();
     const hashedPassword = await bcrypt.hash(body['password'], 10);
+    const customSchoolId = nanoid();
+
 
     // validate request body,
     const { error, value } = await signupSchema.validate(body, { abortEarly: false });
@@ -37,14 +39,22 @@ export const handler = async (event) => {
       }
     }
 
-    const insertQuery = `INSERT INTO user(id,firstname,lastname,emailId,schoolId,password,loginType,status) VALUES (?,?,?,?,?,?,'default','active');`
-    const insertValues = [itemId,body['firstname'],body['lastname'],body['emailId'],body['schoolId'],hashedPassword]
+    if(body['createSchool']==='true'){
+      const insertQuery = `INSERT INTO school(id,district,name,status) VALUES (?,?,?,?);`
+      const insertValues = [customSchoolId,body['districtName'],body['schoolName'],'active'] 
+      const result = await dbExecuteQuery(insertQuery,insertValues);
+      LOGGER.info(reqId, componentName, 'Response from DB :: ', result);
+    }
+
+    const schoolId = body['createSchool']==='true'?customSchoolId:body['schoolId'];
+    const insertQuery = `INSERT INTO user(id,firstname,lastname,emailId,schoolId,password,loginType,status) VALUES (?,?,?,?,?,?,'default','pending');`
+    const insertValues = [itemId,body['firstname'],body['lastname'],body['emailId'],schoolId,hashedPassword]
 
     //If not, inserting user data in the database
     const result = await dbExecuteQuery(insertQuery,insertValues);
     LOGGER.info(reqId, componentName, 'Response from DB :: ', result);
 
-    const token = generateToken(itemId);
+    const token = generateToken(itemId,body['emailId']);
     pool.end();
     return sendResponse(reqId, 200, { message: 'Account created successfully!', data: { id: itemId, token: token } });
 

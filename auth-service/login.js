@@ -29,13 +29,19 @@ export const handler = async (event) => {
 
     // ############ Main business logic ############
     
-    // Get the user with the specified email from the database
+    //step-2: Get user with the specified email from the database
     const [dbResp] = await dbExecuteQuery('SELECT * FROM user WHERE emailId = ?',[body['emailId']]);
 
     LOGGER.info(reqId, componentName, "query results", dbResp);
 
+    //step-3: Check if user exists
     if (!dbResp?.emailId) {
       return sendResponse(reqId, 401, { message: 'User not found' });
+    }
+
+    //step-4: Dont allow user to login if its status is not active 
+    if (dbResp?.status!=='active') {
+      return sendResponse(reqId, 401, { message: 'User not verified' });
     }
 
     const passwordMatch = await bcrypt.compare(body['password'], dbResp.password);
@@ -46,7 +52,7 @@ export const handler = async (event) => {
     }
 
     // Generate a JWT token
-    const token = generateToken(dbResp.id);
+    const token = generateToken(dbResp.id,dbResp.emailId);
 
     // ############ Handler end ############
     pool.end()
