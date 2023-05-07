@@ -55,7 +55,7 @@ export const handler = async (event) => {
     const token = generateToken(dbResp.id,dbResp.emailId);
 
     // ############ Handler end ############
-    pool.end()
+
     // finally return response
     return sendResponse(reqId, 200, { message: 'Login Successful', data: { id: dbResp.id, token: token } });
 

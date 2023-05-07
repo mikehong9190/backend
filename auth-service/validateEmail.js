@@ -28,11 +28,9 @@ export const handler = async (event) => {
     // validating if email already exists in the database
     const [res] = await dbExecuteQuery('SELECT * FROM user WHERE emailId = ?',[body['emailId']])
     if (res?.emailId) {
-        pool.end();
         return sendResponse(reqId, 400, { message: 'User already exists' });
     }
     else{
-        pool.end();
         return sendResponse(reqId, 200, { message: 'User email available'});
     }
 

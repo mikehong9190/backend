@@ -55,7 +55,7 @@ export const handler = async (event) => {
     LOGGER.info(reqId, componentName, 'Response from DB :: ', result);
 
     const token = generateToken(itemId,body['emailId']);
-    pool.end();
+
     return sendResponse(reqId, 200, { message: 'Account created successfully!', data: { id: itemId, token: token } });
 
   } catch (error) {
