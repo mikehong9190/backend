@@ -1,9 +1,11 @@
 import { nanoid } from 'nanoid';
+import bcrypt from 'bcryptjs';
 
 import LOGGER from './utils/logger.js';
 import sendResponse from './utils/sendResponse.js';
 import { loginSchema } from './utils/schema.js';
-import { dbExecuteQuery } from './utils/dbConnect.js';
+import { dbExecuteQuery, pool } from './utils/dbConnect.js';
+import generateToken from './utils/generateToken.js';
 
 const componentName = 'auth-service/login';
 
@@ -26,21 +28,36 @@ export const handler = async (event) => {
     }
 
     // ############ Main business logic ############
-    // step-2: write logic here
-    // TODO: <remove TODO once done>
-    // query db with email, if user found, cross-check hashed password, if correct, send the access token,
-    // else, send appropriate message like - password incorrect, or user not found.
-    const dbResp  = await dbExecuteQuery('SELECT * FROM user');
+    
+    //step-2: Get user with the specified email from the database
+    const [dbResp] = await dbExecuteQuery('SELECT * FROM user WHERE emailId = ?',[body['emailId']]);
+
     LOGGER.info(reqId, componentName, "query results", dbResp);
 
+    //step-3: Check if user exists
+    if (!dbResp?.emailId) {
+      return sendResponse(reqId, 401, { message: 'User not found' });
+    }
+
+    //step-4: Dont allow user to login if its status is not active 
+    if (dbResp?.status!=='active') {
+      return sendResponse(reqId, 401, { message: 'User not verified' });
+    }
+
+    const passwordMatch = await bcrypt.compare(body['password'], dbResp.password);
+   
+    
+    if (!passwordMatch) {
+      return sendResponse(reqId, 401, { message: 'Wrong Password' });
+    }
+
+    // Generate a JWT token
+    const token = generateToken(dbResp.id,dbResp.emailId);
 
     // ############ Handler end ############
 
     // finally return response
-    return sendResponse(reqId, 200, {
-      message: 'success',
-      data: dbResp
-    });
+    return sendResponse(reqId, 200, { message: 'Login Successful', data: { id: dbResp.id, token: token } });
 
   } catch (error) {
     LOGGER.error(reqId, componentName, "Event received", event);

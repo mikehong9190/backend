@@ -35,3 +35,15 @@ functions:
       - httpApi:
           path: /v1/login
           method: post
+  validateEmail:
+    handler: validateEmail.handler
+    events:
+      - httpApi:
+          path: /v1/validate-email
+          method: post
+  signup:
+    handler: signup.handler
+    events:
+      - httpApi:
+          path: /v1/signup
+          method: post
