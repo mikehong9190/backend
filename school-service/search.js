@@ -24,14 +24,21 @@ export const handler = async (event) => {
       };
       return sendResponse(reqId, 400, err);
     }
-
+    
     // ############ Main business logic ############
     const searchText = queryParams.text;
     const limit = queryParams.limit != undefined ? parseInt(queryParams.limit) : 20;
     const page = queryParams.page != undefined ? parseInt(queryParams.page) : 1;
     const offset = (page - 1) * limit;
-
-    const searchQuery = `SELECT id, name, district FROM school WHERE name LIKE '%${searchText}%' AND status = 'active' ORDER BY createdAt DESC LIMIT ${limit} OFFSET ${offset}`;
+    let searchQuery = '';
+    
+    if(!queryParams.district){
+      searchQuery = `SELECT district FROM school WHERE district LIKE '%${searchText}%' AND status = 'active' ORDER BY createdAt DESC LIMIT ${limit} OFFSET ${offset}`;
+    }
+    else{
+      searchQuery = `SELECT id, name, district FROM school WHERE name LIKE '%${searchText}%'  AND status = 'active' AND district = '${queryParams.district}' ORDER BY createdAt DESC LIMIT ${limit} OFFSET ${offset}`;
+    }
+    
 
     LOGGER.info(reqId, componentName, 'seach query to be executed', searchQuery);
     const dbResp = await dbExecuteQuery(searchQuery);

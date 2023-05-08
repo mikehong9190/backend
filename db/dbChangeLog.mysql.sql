@@ -1,6 +1,6 @@
 CREATE DATABASE IF NOT EXISTS swiirl_db_dev;
 USE swiirl_db_dev;
--- changeset punit:1
+-- changeset punit: 1
 CREATE TABLE IF NOT EXISTS school(
     id VARCHAR(100) PRIMARY KEY,
     name VARCHAR(200),
@@ -59,3 +59,13 @@ ADD COLUMN bio VARCHAR(1000);
 -- changeset punit: 3
 ALTER TABLE user
 MODIFY COLUMN status ENUM('active', 'archive', 'pending');
+-- changeset punit: 4
+CREATE TABLE IF NOT EXISTS otp(
+    id VARCHAR(100) PRIMARY KEY,
+    otp VARCHAR(10),
+    emailId VARCHAR(200),
+    type ENUM('verify-email', 'reset-password'),
+    status ENUM('pending', 'verified'),
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);

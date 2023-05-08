@@ -18,8 +18,9 @@ provider:
   region: ${self:custom.region}
   stage: ${self:custom.stage}
   profile: swiirl
-  timeout: 15
+  timeout: 200
   environment:
+    REGION: ${self:custom.region}
     DB_HOST: ${env:DB_HOST}
     DB_USERNAME: ${env:DB_USERNAME}
     DB_PASSWORD: ${env:DB_PASSWORD}
@@ -27,6 +28,11 @@ provider:
   lambdaHashingVersion: 20201221
   httpApi:
     id: !ImportValue SwiirlHttpApiId-${self:custom.stage}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - ses:*
+      Resource: "*"
 
 functions:
   login:
@@ -35,15 +41,33 @@ functions:
       - httpApi:
           path: /v1/login
           method: post
+  signup:
+    handler: signup.handler
+    events:
+      - httpApi:
+          path: /v1/signup
+          method: post
   validateEmail:
     handler: validateEmail.handler
     events:
       - httpApi:
           path: /v1/validate-email
           method: post
-  signup:
-    handler: signup.handler
+  resetPassword:
+    handler: resetPassword.handler
     events:
       - httpApi:
-          path: /v1/signup
+          path: /v1/reset-password
+          method: post
+  sendOTP:
+    handler: sendOTP.handler
+    events:
+      - httpApi:
+          path: /v1/send-otp
+          method: post
+  verifyOTP:
+    handler: verifyOTP.handler
+    events:
+      - httpApi:
+          path: /v1/verify-otp
           method: post

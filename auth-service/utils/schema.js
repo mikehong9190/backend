@@ -2,17 +2,7 @@ import Joi from "joi";
 
 export const loginSchema = Joi.object({
   emailId: Joi.string().email().required(),
-  password: Joi.string()
-            .min(8)
-            .max(20)
-            .pattern(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&<>\.'";:(){}[\],_|=`~\/+-])[A-Za-z\d@$!%*#?&<>\.'";:(){}[\],_|=`~\/+-]{8,}$/)
-            .required()
-            .messages({
-              'any.required': `Password is a required field`,
-              'string.pattern.base': `Password should contain at least 1 letter, number and symbol`,
-              'string.min': `Password must be at least 8 chars long`,
-              'string.max': `Password must not contain more than 20 chars`
-            })
+  password: Joi.string().required()
 })
 .options({ allowUnknown: false });
 
@@ -40,5 +30,25 @@ export const signupSchema = Joi.object({
 .options({ allowUnknown: false });
 
 export const validateEmailSchema = Joi.object({
-  emailId: Joi.string().email().required()
+  emailId: Joi.string().email().required(),
+  requestType:Joi.string().required()
 }).options({ allowUnknown: false })
+
+
+export const verifyOTPSchema = Joi.object({
+  emailId: Joi.string().email().required(),
+  requestType:Joi.string().required(),
+  otp:Joi.number().required()
+})
+
+export const sendOTPSchema = Joi.object({
+  emailId: Joi.string().email().required(),
+  requestType:Joi.string().required()
+}).options({ allowUnknown: false })
+
+
+export const resetPasswordSchema = Joi.object({
+  emailId: Joi.string().email().required(),
+  userId: Joi.string().required(),
+  password:Joi.string().required()
+})

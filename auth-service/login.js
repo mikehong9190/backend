@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 import LOGGER from './utils/logger.js';
 import sendResponse from './utils/sendResponse.js';
 import { loginSchema } from './utils/schema.js';
-import { dbExecuteQuery, pool } from './utils/dbConnect.js';
+import { dbExecuteQuery } from './utils/dbConnect.js';
 import generateToken from './utils/generateToken.js';
 
 const componentName = 'auth-service/login';
