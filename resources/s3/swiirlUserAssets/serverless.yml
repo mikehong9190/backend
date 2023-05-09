@@ -1,0 +1,49 @@
+service: swiirl-user-assets
+
+frameworkVersion: "3"
+
+projectDir: ./
+
+custom:
+  region: ${file(../../../serverless-config.json):region}
+  stage: ${file(../../../serverless-config.json):stage}
+  SwiirlUserAssetsBucketName: ${file(../../../serverless-config.json):swiirlUserAssetsBucketName}-${self:custom.stage}
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  region: ${self:custom.region}
+  stage: ${self:custom.stage}
+
+resources:
+  Resources:
+    SwiirlUserBucket:
+      Type: "AWS::S3::Bucket"
+      DeletionPolicy: Retain
+      Properties:
+        BucketName: ${self:custom.SwiirlUserAssetsBucketName}
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: false
+        OwnershipControls:
+          Rules:
+            - ObjectOwnership: ObjectWriter
+
+    SwiirlUserBucketAllowPublicReadPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: !Ref SwiirlUserBucket
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - "s3:GetObject"
+              Resource:
+                - arn:aws:s3:::${self:custom.SwiirlUserAssetsBucketName}/*
+              Principal: "*"
+
+  Outputs:
+    SwiirlUserBucketArn:
+      Value: !GetAtt SwiirlUserBucket.Arn
+      Export:
+        Name: SwiirlUserBucketArn

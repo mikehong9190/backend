@@ -43,10 +43,10 @@ export const handler = async (event) => {
         Destination: {
             ToAddresses: [
             //   'aadesh10kamble@gmail.com',
-              'punnitbhesota@gmail.com'
+              // 'punnitbhesota@gmail.com'
             //   body['emailId'],
             //   'amanattrish@yahoo.com'
-            // "swiirl-user@mailinator.com",
+            "swiirl-user@mailinator.com",
             
             ],
         },
