@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import AWS from 'aws-sdk';
+// import AWS from 'aws-sdk';
 
 import LOGGER from './utils/logger.js';
 import sendResponse from './utils/sendResponse.js';

@@ -38,7 +38,7 @@ resources:
           Statement:
             - Effect: Allow
               Action:
-                - "s3:GetObject"
+                - "s3:*"
               Resource:
                 - arn:aws:s3:::${self:custom.SwiirlInitiativeAssetsBucketName}/*
               Principal: "*"

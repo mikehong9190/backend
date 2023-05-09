@@ -1,6 +1,7 @@
 import { nanoid } from 'nanoid';
 import parser from 'lambda-multipart-parser';
-import AWS from 'aws-sdk';
+// import AWS from 'aws-sdk';
+import AWS from '/var/runtime/node_modules/aws-sdk/lib/aws.js'
 
 import LOGGER from './utils/logger.js';
 import sendResponse from './utils/sendResponse.js';
