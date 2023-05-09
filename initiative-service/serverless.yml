@@ -11,11 +11,13 @@ plugins:
 custom:
   region: ${file(../serverless-config.json):region}
   stage: ${file(../serverless-config.json):stage}
+  SwiirlInitiativeAssetsBucketName: ${file(../serverless-config.json):swiirlInitiativeAssetsBucketName}-${self:custom.stage}
 
 provider:
   name: aws
   runtime: nodejs16.x
   region: ${self:custom.region}
+  timeout: 15
   stage: ${self:custom.stage}
   profile: default
   environment:
@@ -23,6 +25,8 @@ provider:
     DB_USERNAME: ${env:DB_USERNAME}
     DB_PASSWORD: ${env:DB_PASSWORD}
     DB_NAME: ${env:DB_NAME}
+    SWIIRL_INITIATIVE_BUCKET: ${self:custom.SwiirlInitiativeAssetsBucketName}
+
   lambdaHashingVersion: 20201221
   httpApi:
     id: !ImportValue SwiirlHttpApiId-${self:custom.stage}
@@ -34,3 +38,9 @@ functions:
       - httpApi:
           path: /v1/initiative-types
           method: get
+  create:
+    handler: createInitiative.handler
+    events:
+      - httpApi:
+          path: /v1/create-initiative
+          method: post

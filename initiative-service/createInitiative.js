@@ -1,4 +1,7 @@
 import { nanoid } from 'nanoid';
+import parser from 'lambda-multipart-parser';
+// import AWS from 'aws-sdk';
+import AWS from '/var/runtime/node_modules/aws-sdk/lib/aws.js'
 
 import LOGGER from './utils/logger.js';
 import sendResponse from './utils/sendResponse.js';
@@ -6,17 +9,20 @@ import { dbExecuteQuery } from './utils/dbConnect.js';
 import { createInitiativeSchema } from './utils/schema.js';
 
 const componentName = 'initiative-service/createInitiative';
+const SWIIRL_INITIATIVE_BUCKET = process.env.SWIIRL_INITIATIVE_BUCKET;
+const s3 = new AWS.S3();
 
 //Lambda Handler
 export const handler = async (event) => {
   const reqId = nanoid();
   try {
-    LOGGER.info(reqId, componentName, "Event received", event);
-    const body = await JSON.parse(event.body);
+    // LOGGER.info(reqId, componentName, "Event received", event);
+    const parsedBody = await parser.parse(event);
     const itemId = nanoid();
+    let user = {};
 
     // validate request body,
-    const { error, value } = await createInitiativeSchema.validate(body, { abortEarly: false });
+    const { error, value } = await createInitiativeSchema.validate(parsedBody, { abortEarly: false });
     if (error) {
       LOGGER.error(reqId, componentName, `Invalid request body`, error);
       const err = {
@@ -26,20 +32,52 @@ export const handler = async (event) => {
       return sendResponse(reqId, 400, err);
     }
 
-    const insertQuery = `INSERT INTO initiative(id,district,name,status) VALUES (?,?,?,?);`
-    const insertValues = [customSchoolId,body['districtName'],body['schoolName'],'active'] 
+    
+    const [res] = await dbExecuteQuery('SELECT * FROM user WHERE id = ?',[parsedBody['userId']])
+    // console.log("res----",res)
+      if (res?.id) {
+        user = res;
+      }
+      else{
+        return sendResponse(reqId, 400, { message: 'User Not Found' });
+      }
+
+    const insertQuery = `INSERT INTO initiative(id,userId,initiativeTypeId,target,grade,numberOfStudents,name,status) VALUES (?,?,?,?,?,?,?,?);`
+    const insertValues = [itemId,parsedBody['userId'],parsedBody['initiativeTypeId'],parsedBody['target'],parsedBody['grade'],parsedBody['numberOfStudents'],parsedBody['name'],'active'] 
     const result = await dbExecuteQuery(insertQuery,insertValues);
     LOGGER.info(reqId, componentName, 'Response from DB :: ', result);
 
-    const schoolId = body['createSchool']==='true'?customSchoolId:body['schoolId'];
-    // const insertQuery = `INSERT INTO user(id,firstname,lastname,emailId,schoolId,password,loginType,status) VALUES (?,?,?,?,?,?,'default','pending');`
-    // const insertValues = [itemId,body['firstname'],body['lastname'],body['emailId'],schoolId,hashedPassword]
+    if (parsedBody.files.length > 0) {
+      for(let i=0;i<parsedBody.files.length;i++){
+        const item = parsedBody.files[i];
+        const imageId = nanoid();
+        const imageParams = {
+            Bucket: SWIIRL_INITIATIVE_BUCKET,
+            Key: `${user['firstName']}-${user['lastName']}/${parsedBody['name']}-${itemId}/${imageId}.${item.filename.split('.').pop()}`,
+            Body: item.content,
+            ContentType: item.contentType,
+            ContentEncoding: item.encoding
+        };
+  
+        const allowedContentTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'];
+        if (allowedContentTypes.includes(item.contentType)) {
+            imageParams.ContentType = item.contentType;
+        } else {
+            imageParams.ContentType = 'application/octet-stream';
+        }
+        const s3Response = await s3.putObject(imageParams).promise();
+        const image_key = `${user['firstName']}-${user['lastName']}/${parsedBody['name']}-${itemId}/${imageId}.${item.filename.split('.').pop()}`;
+        LOGGER.info(reqId, componentName, 'Response from S3 :: ', s3Response);
+        const result = await dbExecuteQuery(
+            'INSERT INTO image (id,initiativeId,imageKey,status) VALUES (?,?,?,?)',
+            [imageId,itemId, image_key,'active']
+        );
+        LOGGER.info(reqId, componentName, 'Response from DB :: ', result);
+      }
+  }
 
-    //If not, inserting user data in the database
-    // const result = await dbExecuteQuery(insertQuery,insertValues);
-    
-    LOGGER.info(reqId, componentName, 'Response from DB :: ', result);
-    return sendResponse(reqId, 200, { message: 'Initiative created successfully!'});
+  
+  return sendResponse(reqId, 200, { message: 'Initiative created successfully!'});
 
   } catch (error) {
     LOGGER.error(reqId, componentName, 'Exception raised :: ', error);

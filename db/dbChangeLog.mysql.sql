@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS initiative(
     actual INT,
     name VARCHAR(200),
     numberOfStudents INT,
+    grade VARCHAR(100),
     status ENUM('active', 'archived'),
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
