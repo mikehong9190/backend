@@ -1,5 +1,6 @@
 import { nanoid } from 'nanoid';
-import AWS from 'aws-sdk';
+// import AWS from 'aws-sdk';
+import AWS from '/var/runtime/node_modules/aws-sdk/lib/aws.js'
 import otpGenerator from 'otp-generator';
 
 import LOGGER from './utils/logger.js';
@@ -73,7 +74,7 @@ export const handler = async (event) => {
         const result = await dbExecuteQuery(insertQuery,insertValues);
         LOGGER.info(reqId, componentName, 'Response from DB :: ', result);
         
-        return sendResponse(reqId, 400, { message: 'OTP sent successfully' });
+        return sendResponse(reqId, 200, { message: 'OTP sent successfully' });
     } catch (error) {
         console.error({
             reqId,
