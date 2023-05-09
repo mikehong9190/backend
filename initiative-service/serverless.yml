@@ -3,6 +3,11 @@ service: swiirl-initiative
 projectDir: ../
 frameworkVersion: "3"
 
+useDotenv: true
+
+plugins:
+  - serverless-offline
+
 custom:
   region: ${file(../serverless-config.json):region}
   stage: ${file(../serverless-config.json):stage}
@@ -13,4 +18,19 @@ provider:
   region: ${self:custom.region}
   stage: ${self:custom.stage}
   profile: default
+  environment:
+    DB_HOST: ${env:DB_HOST}
+    DB_USERNAME: ${env:DB_USERNAME}
+    DB_PASSWORD: ${env:DB_PASSWORD}
+    DB_NAME: ${env:DB_NAME}
   lambdaHashingVersion: 20201221
+  httpApi:
+    id: !ImportValue SwiirlHttpApiId-${self:custom.stage}
+
+functions:
+  getInitiativeTypes:
+    handler: getInitiativeTypes.handler
+    events:
+      - httpApi:
+          path: /v1/initiative-types
+          method: get
