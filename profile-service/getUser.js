@@ -1,11 +1,11 @@
 import { nanoid } from 'nanoid';
 
-import LOGGER from './utils/logger.js';
-import sendResponse from './utils/sendResponse.js';
-import { dbExecuteQuery } from './utils/dbConnect.js';
-import {  getProfileSchema } from './utils/schema.js';
+import LOGGER from '../profile-service/utils/logger.js';
+import sendResponse from '../profile-service/utils/sendResponse.js';
+import { dbExecuteQuery } from '../profile-service/utils/dbConnect.js';
+import {  getProfileSchema } from '../profile-service/utils/schema.js';
 
-const componentName = 'auth-service/getUser';
+const componentName = 'profile-service/getUser';
 const SWIIRL_USER_BUCKET = process.env.SWIIRL_USER_BUCKET;
 const SWIIRL_INITIATIVE_BUCKET = process.env.SWIIRL_INITIATIVE_BUCKET;
 

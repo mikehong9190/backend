@@ -3,12 +3,12 @@ import parser from 'lambda-multipart-parser';
 // import AWS from 'aws-sdk';
 import AWS from '/var/runtime/node_modules/aws-sdk/lib/aws.js'
 
-import LOGGER from './utils/logger.js';
-import sendResponse from './utils/sendResponse.js';
-import { dbExecuteQuery } from './utils/dbConnect.js';
-import {  updateProfileSchema } from './utils/schema.js';
+import LOGGER from '../profile-service/utils/logger.js';
+import sendResponse from '../profile-service/utils/sendResponse.js';
+import { dbExecuteQuery } from '../profile-service/utils/dbConnect.js';
+import {  updateProfileSchema } from '../profile-service/utils/schema.js';
 
-const componentName = 'auth-service/updateProfile';
+const componentName = 'profile-service/updateProfile';
 const SWIIRL_USER_BUCKET = process.env.SWIIRL_USER_BUCKET;
 const s3 = new AWS.S3();
 

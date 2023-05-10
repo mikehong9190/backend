@@ -52,30 +52,11 @@ functions:
       - httpApi:
           path: /v1/signup
           method: post
-  update:
-    handler: updateProfile.handler
-    events:
-      - httpApi:
-          path: /v1/update-profile
-          method: put
-  getUser:
-    handler: getUser.handler
-    events:
-      - httpApi:
-          path: /v1/users
-          method: get
-
   validateEmail:
     handler: validateEmail.emailhandler
     events:
       - httpApi:
           path: /v1/validate-email
-          method: post
-  resetPassword:
-    handler: resetPassword.handler
-    events:
-      - httpApi:
-          path: /v1/reset-password
           method: post
   sendOTP:
     handler: sendOTP.handler
