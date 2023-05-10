@@ -1,0 +1,50 @@
+service: swiirl-initiative-assets
+
+frameworkVersion: "3"
+
+projectDir: ./
+
+custom:
+  region: ${file(../../../serverless-config.json):region}
+  stage: ${file(../../../serverless-config.json):stage}
+  SwiirlInitiativeAssetsBucketName: ${file(../../../serverless-config.json):swiirlInitiativeAssetsBucketName}-${self:custom.stage}
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  region: ${self:custom.region}
+  stage: ${self:custom.stage}
+
+resources:
+  Resources:
+    SwiirlInitiativeBucket:
+      Type: "AWS::S3::Bucket"
+      DeletionPolicy: Retain
+      Properties:
+        BucketName: ${self:custom.SwiirlInitiativeAssetsBucketName}
+        # AccessControl: PublicRead
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: false
+        OwnershipControls:
+          Rules:
+            - ObjectOwnership: ObjectWriter
+
+    SwiirlInitiativeBucketAllowPublicReadPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: !Ref SwiirlInitiativeBucket
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - "s3:*"
+              Resource:
+                - arn:aws:s3:::${self:custom.SwiirlInitiativeAssetsBucketName}/*
+              Principal: "*"
+
+  Outputs:
+    SwiirlInitiativeBucketArn:
+      Value: !GetAtt SwiirlInitiativeBucket.Arn
+      Export:
+        Name: SwiirlInitiativeBucketArn

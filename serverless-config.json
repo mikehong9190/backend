@@ -2,5 +2,8 @@
 {
   "region": "us-east-1",
   "stage": "dev",
-  "account": "221225726826"
+  "account": "221225726826",
+  "swiirlUserAssetsBucketName": "swiirl-user-assets",
+  "swiirlInitiativeAssetsBucketName": "swiirl-initiative-assets"
+
 }
