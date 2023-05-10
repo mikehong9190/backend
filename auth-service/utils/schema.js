@@ -29,6 +29,12 @@ export const signupSchema = Joi.object({
 })
 .options({ allowUnknown: false });
 
+export const getProfileSchema = Joi.object({
+  id:Joi.string().required(),
+
+})
+.options({ allowUnknown: false });
+
 export const updateProfileSchema = Joi.object({
   id:Joi.string().required(),
   firstName: Joi.string().optional(),

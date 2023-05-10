@@ -12,6 +12,7 @@ custom:
   region: ${file(../serverless-config.json):region}
   stage: ${file(../serverless-config.json):stage}
   SwiirlUserAssetsBucketName: ${file(../serverless-config.json):swiirlUserAssetsBucketName}-${self:custom.stage}
+  SwiirlInitiativeAssetsBucketName: ${file(../serverless-config.json):swiirlInitiativeAssetsBucketName}-${self:custom.stage}
 
 provider:
   name: aws
@@ -27,6 +28,8 @@ provider:
     DB_PASSWORD: ${env:DB_PASSWORD}
     DB_NAME: ${env:DB_NAME}
     SWIIRL_USER_BUCKET: ${self:custom.SwiirlUserAssetsBucketName}
+    SWIIRL_INITIATIVE_BUCKET: ${self:custom.SwiirlInitiativeAssetsBucketName}
+
   lambdaHashingVersion: 20201221
   httpApi:
     id: !ImportValue SwiirlHttpApiId-${self:custom.stage}
@@ -55,6 +58,13 @@ functions:
       - httpApi:
           path: /v1/update-profile
           method: put
+  getUser:
+    handler: getUser.handler
+    events:
+      - httpApi:
+          path: /v1/users
+          method: get
+
   validateEmail:
     handler: validateEmail.emailhandler
     events:
