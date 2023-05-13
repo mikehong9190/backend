@@ -1,10 +1,10 @@
 import { nanoid } from 'nanoid';
 import bcrypt from 'bcryptjs';
 
-import LOGGER from '../profile-service/utils/logger.js';
-import sendResponse from '../profile-service/utils/sendResponse.js';
-import { dbExecuteQuery } from '../profile-service/utils/dbConnect.js';
-import {  resetPasswordSchema, validateEmailSchema } from '../profile-service/utils/schema.js';
+import LOGGER from './utils/logger.js';
+import sendResponse from './utils/sendResponse.js';
+import { dbExecuteQuery } from './utils/dbConnect.js';
+import {  resetPasswordSchema } from './utils/schema.js';
 const componentName = 'profile-service/resetPassword';
 
 //Lambda Handler

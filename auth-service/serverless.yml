@@ -27,6 +27,7 @@ provider:
     DB_USERNAME: ${env:DB_USERNAME}
     DB_PASSWORD: ${env:DB_PASSWORD}
     DB_NAME: ${env:DB_NAME}
+    GOOGLE_CLIENT_ID: ${env:GOOGLE_CLIENT_ID}
     SWIIRL_USER_BUCKET: ${self:custom.SwiirlUserAssetsBucketName}
     SWIIRL_INITIATIVE_BUCKET: ${self:custom.SwiirlInitiativeAssetsBucketName}
 
@@ -52,6 +53,12 @@ functions:
       - httpApi:
           path: /v1/signup
           method: post
+  updateSchool:
+    handler: addSchoolDetails.handler
+    events:
+      - httpApi:
+          path: /v1/update-school-details
+          method: put
   validateEmail:
     handler: validateEmail.emailhandler
     events:

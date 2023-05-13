@@ -1,5 +1,6 @@
 import { nanoid } from 'nanoid';
 import bcrypt from 'bcryptjs';
+import { OAuth2Client } from 'google-auth-library';
 
 import LOGGER from './utils/logger.js';
 import sendResponse from './utils/sendResponse.js';
@@ -8,6 +9,7 @@ import { dbExecuteQuery, pool } from './utils/dbConnect.js';
 import { signupSchema } from './utils/schema.js';
 
 const componentName = 'auth-service/signup';
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 //Lambda Handler
 export const handler = async (event) => {
@@ -16,8 +18,31 @@ export const handler = async (event) => {
     LOGGER.info(reqId, componentName, "Event received", event);
     const body = await JSON.parse(event.body);
     const itemId = nanoid();
-    const hashedPassword = await bcrypt.hash(body['password'], 10);
-    const customSchoolId = nanoid();
+    if(body.idToken){
+      const ticket = await googleClient.verifyIdToken({
+        idToken: body.idToken,
+        audience: process.env.GOOGLE_CLIENT_ID,
+      });
+      let user = ticket.getPayload();
+      //Validating if email already exists in db
+        const [res] = await dbExecuteQuery('SELECT * FROM user WHERE emailId = ?',[user.email])
+        if (res?.emailId) {
+          const token = generateToken(res?.id,res.emailId);
+          return sendResponse(reqId, 200, { message: 'Logged in Successfully', data: { id: res?.id, token: token } });       
+        }
+        else{
+          const insertQuery = `INSERT INTO user(id,firstname,lastname,emailId,profilePictureKey,loginType,status) VALUES (?,?,?,?,?,'google','active');`
+          const insertValues = [itemId,user.given_name,user.family_name,user.email,user.picture]
+          const result = await dbExecuteQuery(insertQuery,insertValues);
+          LOGGER.info(reqId, componentName, 'Response from DB :: ', result);
+          const token = generateToken(itemId,user.email);
+          return sendResponse(reqId, 200, { message: 'Account created successfully!', data: { id: itemId, token: token } });
+        }
+     
+    }
+    else{
+      const hashedPassword = await bcrypt.hash(body['password'], 10);
+      const customSchoolId = nanoid();
 
 
     // validate request body,
@@ -58,6 +83,7 @@ export const handler = async (event) => {
 
     return sendResponse(reqId, 200, { message: 'Account created successfully!', data: { id: itemId, token: token } });
 
+    }  
   } catch (error) {
     LOGGER.error(reqId, componentName, 'Exception raised :: ', error);
     return sendResponse(reqId, 500, error?.message || 'Internal Server Error');
