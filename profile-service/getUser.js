@@ -1,9 +1,9 @@
 import { nanoid } from 'nanoid';
 
-import LOGGER from '../profile-service/utils/logger.js';
-import sendResponse from '../profile-service/utils/sendResponse.js';
-import { dbExecuteQuery } from '../profile-service/utils/dbConnect.js';
-import {  getProfileSchema } from '../profile-service/utils/schema.js';
+import LOGGER from './utils/logger.js';
+import sendResponse from './utils/sendResponse.js';
+import { dbExecuteQuery } from './utils/dbConnect.js';
+import {  getProfileSchema } from './utils/schema.js';
 
 const componentName = 'profile-service/getUser';
 const SWIIRL_USER_BUCKET = process.env.SWIIRL_USER_BUCKET;
@@ -29,8 +29,10 @@ export const handler = async (event) => {
 
     // Get user details
     const [user] = await dbExecuteQuery(
-      'SELECT firstName,lastName,bio,profilePictureKey,emailId,schoolId FROM user WHERE id = ?', id
+      'SELECT firstName,lastName,bio,profilePictureKey,emailId,schoolId,loginType FROM user WHERE id = ?', id
     );
+
+    
 
     if (user.length === 0) {
       return sendResponse(reqId, 404, 'User not found');
@@ -39,19 +41,24 @@ export const handler = async (event) => {
     let userData={
         firstName:user.firstName,
         lastName:user.lastName,
-        bio:user.bio
+        bio:user.bio,
+        email:user.emailId
     }
 
-    userData['profilePicture'] = user['profilePictureKey']?`https://${SWIIRL_USER_BUCKET}.s3.amazonaws.com/${user['profilePictureKey']}`:null;
+    
+    userData['profilePicture'] = user['profilePictureKey']&&user['loginType']==='default'?`https://${SWIIRL_USER_BUCKET}.s3.amazonaws.com/${user['profilePictureKey']}`:user['loginType']==='google'?user['profilePictureKey']:null;
 
 
     //Get the user's school details
-    const [school] = await dbExecuteQuery(
+    if(user.schoolId){
+      const [school] = await dbExecuteQuery(
         'SELECT district,name FROM school WHERE id = ?', user.schoolId
     );
     
-    userData['schoolName'] = school.name;
-    userData['schoolDistrict'] = school.district;
+    userData['schoolName'] = school?.name?school.name:null;
+    userData['schoolDistrict'] = school?.district?school?.district:null;
+    }
+    
 
     //Getting user's initiative details
     const [dbResp] = await dbExecuteQuery(`SELECT
@@ -63,10 +70,11 @@ export const handler = async (event) => {
     JOIN initiative i ON u.id = i.userId
     WHERE
     u.id = ? `,id)
-    userData['goalsMet'] = dbResp.goalsMet
-    userData['moneyRaised'] = dbResp.moneyRaised
+    userData['goalsMet'] = dbResp.goalsMet?dbResp.goalsMet:null
+    userData['moneyRaised'] = dbResp.moneyRaised?dbResp.moneyRaised:null
     
-    let initiatives = dbResp.initiatives.split(',')
+    if(dbResp){
+      let initiatives = dbResp?.initiatives?.split(',')
 
     //Getting user's initiative images
     const images = await dbExecuteQuery(`
@@ -75,8 +83,10 @@ export const handler = async (event) => {
         FROM image i
         WHERE i.initiativeId IN (?)`,[initiatives])
     
-    let allImages = images[0].images.split(',').map(str => `https://${SWIIRL_INITIATIVE_BUCKET}.s3.amazonaws.com/` + str);
-    userData['collectibles'] = allImages
+    let allImages = images[0]?.images?.split(',').map(str => `https://${SWIIRL_INITIATIVE_BUCKET}.s3.amazonaws.com/` + str);
+    userData['collectibles'] = allImages?allImages:null
+    
+    }
     
     LOGGER.info(reqId, componentName, 'Response from DB :: ',userData);
     return sendResponse(reqId, 200, { message: 'User Details Fetched Successfully',data:userData});

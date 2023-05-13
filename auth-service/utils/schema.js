@@ -7,6 +7,7 @@ export const loginSchema = Joi.object({
 .options({ allowUnknown: false });
 
 export const signupSchema = Joi.object({
+  idToken:Joi.string().optional(),
   firstname: Joi.string().required(),
   lastname: Joi.string().required(),
   emailId: Joi.string().email().required(),
@@ -28,6 +29,16 @@ export const signupSchema = Joi.object({
   
 })
 .options({ allowUnknown: false });
+
+export const updateSchoolSchema = Joi.object({
+  id:Joi.string().required(),
+  createSchool:Joi.bool().required(),
+  districtName:Joi.string().optional(),
+  schoolName:Joi.string().optional(),
+  schoolId:Joi.string().optional()  
+})
+.options({ allowUnknown: false });
+
 
 export const getProfileSchema = Joi.object({
   id:Joi.string().required(),

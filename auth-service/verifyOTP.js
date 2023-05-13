@@ -45,6 +45,11 @@ export const handler = async (event) => {
                        AND type = ?
                        AND otp = ?`
         const res = await dbExecuteQuery(query,[body['emailId'],requestType,body['otp']])
+
+        const userquery = `UPDATE user
+                        SET status=?
+                       WHERE emailId = ?`
+        const userres = await dbExecuteQuery(userquery,['active',body['emailId']])
         return sendResponse(reqId,200,{message:"OTP Verified Successfully"})
       } 
       else{

@@ -45,9 +45,8 @@ export const handler = async (event) => {
             //   'aadesh10kamble@gmail.com',
               // 'punnitbhesota@gmail.com'
             //   body['emailId'],
-            //   'amanattrish@yahoo.com'
-            "swiirl-user@mailinator.com",
-            
+            'amanattrish@yahoo.com',
+            "swiirl-user@mailinator.com",      
             ],
         },
         Message: {

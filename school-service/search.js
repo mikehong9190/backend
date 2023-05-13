@@ -33,10 +33,10 @@ export const handler = async (event) => {
     let searchQuery = '';
     
     if(!queryParams.district){
-      searchQuery = `SELECT district FROM school WHERE district LIKE '%${searchText}%' AND status = 'active' ORDER BY createdAt DESC LIMIT ${limit} OFFSET ${offset}`;
+      searchQuery = `SELECT DISTINCT district FROM school WHERE district LIKE '%${searchText}%' AND status = 'active' ORDER BY createdAt DESC LIMIT ${limit} OFFSET ${offset}`;
     }
     else{
-      searchQuery = `SELECT id, name, district FROM school WHERE name LIKE '%${searchText}%'  AND status = 'active' AND district = '${queryParams.district}' ORDER BY createdAt DESC LIMIT ${limit} OFFSET ${offset}`;
+      searchQuery = `SELECT DISTINCT id, name, district FROM school WHERE name LIKE '%${searchText}%'  AND status = 'active' AND district = '${queryParams.district}' ORDER BY createdAt DESC LIMIT ${limit} OFFSET ${offset}`;
     }
     
 
