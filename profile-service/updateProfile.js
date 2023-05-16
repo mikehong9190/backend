@@ -77,6 +77,9 @@ export const handler = async (event) => {
   } 
   catch (error) {
     LOGGER.error(reqId, componentName, 'Exception raised :: ', error);
-    return sendResponse(reqId, 500, error?.message || 'Internal Server Error');
+    return sendResponse(reqId, 500, {
+      message: error.message || 'Internal Server Error',
+      error
+    });
   }
 };

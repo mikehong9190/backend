@@ -49,7 +49,7 @@ export const handler = async (event) => {
 
       }
       else{
-        return sendResponse(reqId, 200, { message: 'Cannot update Details, please try again later'});
+        return sendResponse(reqId, 400, { message: 'Cannot update Details, please try again later'});
          
       }
     }
@@ -58,7 +58,10 @@ export const handler = async (event) => {
   
   } catch (error) {
     LOGGER.error(reqId, componentName, 'Exception raised :: ', error);
-    return sendResponse(reqId, 500, error?.message || 'Internal Server Error');
+    return sendResponse(reqId, 500, {
+      message: error.message || 'Internal Server Error',
+      error
+    });
   }
 
 };

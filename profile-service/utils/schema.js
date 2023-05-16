@@ -9,7 +9,7 @@ export const updateProfileSchema = Joi.object({
   id:Joi.string().required(),
   firstName: Joi.string().optional(),
   lastName: Joi.string().optional(),
-  bio:Joi.string().optional(),
+  bio:Joi.string().optional().allow(null, ''),
   files:Joi.array().optional(),
 })
 .options({ allowUnknown: false });

@@ -41,12 +41,22 @@ export const handler = async (event) => {
     let userData={
         firstName:user.firstName,
         lastName:user.lastName,
-        bio:user.bio,
-        email:user.emailId
+        bio:user.bio?user.bio:'',
+        email:user.emailId,
+        profilePicture:user.profilePictureKey
+    }
+    console.log("userdata1",userData)
+
+    if(userData['profilePicture']){
+      userData['profilePicture'] = userData['profilePicture'].startsWith('https')?userData['profilePicture']:`https://${SWIIRL_USER_BUCKET}.s3.amazonaws.com/${user['profilePictureKey']}`
     }
 
-    
-    userData['profilePicture'] = user['profilePictureKey']&&user['loginType']==='default'?`https://${SWIIRL_USER_BUCKET}.s3.amazonaws.com/${user['profilePictureKey']}`:user['loginType']==='google'?user['profilePictureKey']:null;
+    else{
+      userData['profilePicture']=''
+    }
+    console.log("userdata2",userData)
+
+    // userData['profilePicture'] = user['profilePictureKey']&&user['loginType']==='default'?`https://${SWIIRL_USER_BUCKET}.s3.amazonaws.com/${user['profilePictureKey']}`:user['loginType']==='google'?user['profilePictureKey']:'';
 
 
     //Get the user's school details
@@ -55,8 +65,8 @@ export const handler = async (event) => {
         'SELECT district,name FROM school WHERE id = ?', user.schoolId
     );
     
-    userData['schoolName'] = school?.name?school.name:null;
-    userData['schoolDistrict'] = school?.district?school?.district:null;
+    userData['schoolName'] = school?.name?school.name:'';
+    userData['schoolDistrict'] = school?.district?school?.district:'';
     }
     
 
@@ -70,8 +80,8 @@ export const handler = async (event) => {
     JOIN initiative i ON u.id = i.userId
     WHERE
     u.id = ? `,id)
-    userData['goalsMet'] = dbResp.goalsMet?dbResp.goalsMet:null
-    userData['moneyRaised'] = dbResp.moneyRaised?dbResp.moneyRaised:null
+    userData['goalsMet'] = dbResp.goalsMet?dbResp.goalsMet:0
+    userData['moneyRaised'] = dbResp.moneyRaised?dbResp.moneyRaised:0
     
     if(dbResp){
       let initiatives = dbResp?.initiatives?.split(',')
@@ -84,7 +94,7 @@ export const handler = async (event) => {
         WHERE i.initiativeId IN (?)`,[initiatives])
     
     let allImages = images[0]?.images?.split(',').map(str => `https://${SWIIRL_INITIATIVE_BUCKET}.s3.amazonaws.com/` + str);
-    userData['collectibles'] = allImages?allImages:null
+    userData['collectibles'] = allImages?allImages:[]
     
     }
     
@@ -93,6 +103,9 @@ export const handler = async (event) => {
   } 
   catch (error) {
     LOGGER.error(reqId, componentName, 'Exception raised :: ', error);
-    return sendResponse(reqId, 500, error?.message || 'Internal Server Error');
+    return sendResponse(reqId, 500, {
+      message: error.message || 'Internal Server Error',
+      error
+    });
   }
 };

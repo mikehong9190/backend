@@ -42,11 +42,11 @@ export const handler = async (event) => {
         Source: 'punnitbhesota@gmail.com',
         Destination: {
             ToAddresses: [
-            //   'aadesh10kamble@gmail.com',
+               //'aadesh10kamble@gmail.com',
               // 'punnitbhesota@gmail.com'
-            //   body['emailId'],
-            'amanattrish@yahoo.com',
-            "swiirl-user@mailinator.com",      
+              body['emailId'],
+            // 'amanattrish@yahoo.com',
+            // "swiirl-user@mailinator.com",      
             ],
         },
         Message: {
@@ -87,7 +87,10 @@ export const handler = async (event) => {
 
   } catch (error) {
     LOGGER.error(reqId, componentName, 'Exception raised :: ', error);
-    return sendResponse(reqId, 500, error?.message || 'Internal Server Error');
+    return sendResponse(reqId, 500, {
+      message: error.message || 'Internal Server Error',
+      error
+    });
   }
 
 };
