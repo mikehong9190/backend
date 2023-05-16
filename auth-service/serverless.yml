@@ -27,7 +27,8 @@ provider:
     DB_USERNAME: ${env:DB_USERNAME}
     DB_PASSWORD: ${env:DB_PASSWORD}
     DB_NAME: ${env:DB_NAME}
-    GOOGLE_CLIENT_ID: ${env:GOOGLE_CLIENT_ID}
+    ANDROID_GOOGLE_CLIENT_ID: ${env:ANDROID_GOOGLE_CLIENT_ID}
+    IOS_GOOGLE_CLIENT_ID: ${env:IOS_GOOGLE_CLIENT_ID}
     SWIIRL_USER_BUCKET: ${self:custom.SwiirlUserAssetsBucketName}
     SWIIRL_INITIATIVE_BUCKET: ${self:custom.SwiirlInitiativeAssetsBucketName}
 

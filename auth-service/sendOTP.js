@@ -78,7 +78,7 @@ export const handler = async (event) => {
         console.error({
             reqId,
             componentName,
-            message: 'Send Email Failed',
+            message: 'Send OTP Failed',
             error,
         });
         throw error;

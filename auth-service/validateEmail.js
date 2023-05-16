@@ -57,7 +57,7 @@ export const emailhandler = async (event) => {
       // const responsePayload = JSON.parse(invokeResponse.Payload.toString());
       // const response = await lambda.invoke(invokeParams).promise();
       const response = await handler(event)
-      return sendResponse(reqId, 200, JSON.parse(response.body));
+      return sendResponse(reqId, JSON.parse(response.statusCode), JSON.parse(response.body));
     }
 
   } catch (error) {

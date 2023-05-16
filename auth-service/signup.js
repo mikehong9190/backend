@@ -9,7 +9,7 @@ import { dbExecuteQuery, pool } from './utils/dbConnect.js';
 import { signupSchema } from './utils/schema.js';
 
 const componentName = 'auth-service/signup';
-const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+const googleClient = new OAuth2Client(process.env.ANDROID_GOOGLE_CLIENT_ID);
 
 //Lambda Handler
 export const handler = async (event) => {
@@ -18,10 +18,11 @@ export const handler = async (event) => {
     LOGGER.info(reqId, componentName, "Event received", event);
     const body = await JSON.parse(event.body);
     const itemId = nanoid();
+    const decodingToken = body.platform ==='ios'?process.env.IOS_GOOGLE_CLIENT_ID:process.env.ANDROID_GOOGLE_CLIENT_ID
     if(body.idToken){
       const ticket = await googleClient.verifyIdToken({
         idToken: body.idToken,
-        audience: process.env.GOOGLE_CLIENT_ID,
+        audience: decodingToken,
       });
       let user = ticket.getPayload();
       //Validating if email already exists in db
@@ -72,7 +73,7 @@ export const handler = async (event) => {
     }
 
     const schoolId = body['createSchool']==='true'?customSchoolId:body['schoolId'];
-    const insertQuery = `INSERT INTO user(id,firstname,lastname,emailId,schoolId,password,loginType,status) VALUES (?,?,?,?,?,?,'default','pending');`
+    const insertQuery = `INSERT INTO user(id,firstname,lastname,emailId,schoolId,password,loginType,status) VALUES (?,?,?,?,?,?,'default','active');`
     const insertValues = [itemId,body['firstname'],body['lastname'],body['emailId'],schoolId,hashedPassword]
 
     //If not, inserting user data in the database
