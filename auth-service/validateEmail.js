@@ -1,8 +1,4 @@
 import { nanoid } from 'nanoid';
-// import AWS from 'aws-sdk';
-// import otpGenerator from 'otp-generator';
-
-// import { LambdaClient, InvokeCommand } from "@aws-sdk/client-lambda";
 
 import LOGGER from './utils/logger.js';
 import sendResponse from './utils/sendResponse.js';
@@ -10,7 +6,6 @@ import { dbExecuteQuery, pool } from './utils/dbConnect.js';
 import { handler } from './sendOTP.js';
 import {  validateEmailSchema } from './utils/schema.js';
 const componentName = 'auth-service/validateEmail';
-// const lambda = new AWS.Lambda();
 
 //Lambda Handler
 export const emailhandler = async (event) => {
@@ -19,21 +14,6 @@ export const emailhandler = async (event) => {
   try {
     LOGGER.info(reqId, componentName, "Event received", event);
     const body = await JSON.parse(event.body);
-    // const lambdaClient = new LambdaClient({ region: process.env.REGION });
-    // const payload={
-    //   emailId:body['emailId'],
-    //   requestType:"email"
-    // }
-    // console.log("payload----",payload)
-    // console.log("AWS----",process.env.AWS_ACCESS_KEY_ID)
-    // const invokeParams = {
-    //   FunctionName: "swiirl-auth-dev-sendOTP",
-    //   InvocationType:'RequestResponse',
-    //   LogType:'None',
-    //   Payload: event.body,
-    // };
-  
-  // const invokeCommand = new InvokeCommand(invokeParams);
   
 
     // validate request body,
@@ -46,19 +26,32 @@ export const emailhandler = async (event) => {
       };
       return sendResponse(reqId, 400, err);
     }
-
+    if(body['requestType']==='password'){
+      const [res] = await dbExecuteQuery('SELECT * FROM user WHERE emailId=? AND loginType=?',[body['emailId'],'default']);
+      const [res2] = await dbExecuteQuery('SELECT * FROM user WHERE emailId=?',[body['emailId']]);
+      if(res?.emailId && res2?.emailId){
+        const response = await handler(event)
+        return sendResponse(reqId, JSON.parse(response.statusCode), JSON.parse(response.body));
+      }
+      else if(res2?.emailId && !res?.emailId){
+        return sendResponse(reqId, 400, { message: 'Sign in using google' });
+      }
+      else{
+        return sendResponse(reqId, 400, { message: 'User does not exists' });
+      }
+    }
     // validating if email already exists in the database
-    const [res] = await dbExecuteQuery('SELECT * FROM user WHERE emailId = ?',[body['emailId']])
-    if (res?.emailId) {
-        return sendResponse(reqId, 400, { message: 'User already exists' });
-    }
     else{
-      // const invokeResponse = await lambdaClient.send(invokeCommand);
-      // const responsePayload = JSON.parse(invokeResponse.Payload.toString());
-      // const response = await lambda.invoke(invokeParams).promise();
-      const response = await handler(event)
-      return sendResponse(reqId, JSON.parse(response.statusCode), JSON.parse(response.body));
+      const [res] = await dbExecuteQuery('SELECT * FROM user WHERE emailId = ?',[body['emailId']])
+      if (res?.emailId) {
+        return sendResponse(reqId, 400, { message: 'User already exists' });
+      }
+      else{
+        const response = await handler(event)
+        return sendResponse(reqId, JSON.parse(response.statusCode), JSON.parse(response.body));
     }
+    }
+    
 
   } catch (error) {
     LOGGER.error(reqId, componentName, 'Exception raised :: ', error);
