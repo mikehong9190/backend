@@ -6,7 +6,7 @@ export const createInitiativeSchema = Joi.object({
   name:Joi.string().required(),
   target:Joi.number().required(),
   grade:Joi.string().required(),
-  numberOfStudents:Joi.string().required(),
+  numberOfStudents:Joi.number().required(),
   files:Joi.array().required()
 })
 .options({ allowUnknown: false });

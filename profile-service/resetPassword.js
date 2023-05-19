@@ -33,11 +33,20 @@ export const handler = async (event) => {
     const res = await dbExecuteQuery(query,[body['emailId'],'reset-password','verified']);
     LOGGER.info(reqId, componentName, 'Response from DB :: ', res);
     
-    if(res){
+    if(res && body['userId']){
         const insertQuery = `UPDATE user
                             SET password = ?
                             WHERE id = ?;`
         const insertValues = [hashedPassword,body['userId']];
+        const result = await dbExecuteQuery(insertQuery,insertValues);
+        LOGGER.info(reqId, componentName, 'Response from DB :: ', result);
+        return sendResponse(reqId, 200, { message: 'Password Updated Successfully' });
+    }
+    else if(res && !body['userId']){
+      const insertQuery = `UPDATE user
+                            SET password = ?
+                            WHERE emailId = ?;`
+        const insertValues = [hashedPassword,body['emailId']];
         const result = await dbExecuteQuery(insertQuery,insertValues);
         LOGGER.info(reqId, componentName, 'Response from DB :: ', result);
         return sendResponse(reqId, 200, { message: 'Password Updated Successfully' });
