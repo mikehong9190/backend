@@ -34,7 +34,7 @@ export const handler = async (event) => {
 
     
 
-    if (user.length === 0) {
+    if (!user) {
       return sendResponse(reqId, 404, 'User not found');
     }
     // let userData = user;

@@ -17,6 +17,6 @@ export const updateProfileSchema = Joi.object({
 
 export const resetPasswordSchema = Joi.object({
   emailId: Joi.string().email().required(),
-  userId: Joi.string().required(),
-  password:Joi.string().optional()
+  userId: Joi.string().optional(),
+  password:Joi.string().required()
 })
