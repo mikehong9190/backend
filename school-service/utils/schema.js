@@ -13,3 +13,4 @@ export const searchSchema = Joi.object({
           // })
 })
 .options({ allowUnknown: false });
+
