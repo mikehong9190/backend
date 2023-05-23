@@ -21,8 +21,15 @@ export const handler = async (event) => {
     // const page = queryParams.page != undefined ? parseInt(queryParams.page) : 1;
     // const offset = (page - 1) * limit;
     let searchQuery = '';
-    
-    if(queryParams.schoolId){
+
+      //validate if school with this schoolId exists
+      const validateQuery = `SELECT * FROM school WHERE id=?`;
+      const [resp] = await dbExecuteQuery(validateQuery,[queryParams.schoolId]);
+      console.log('resp----',resp)
+      if(!resp?.name){
+        return sendResponse(reqId, 400, {
+          message: 'School does not exist'});
+      }
       // searchQuery = `SELECT u.firstName as user_first_name, u.lastName as user_last_name, s.name as school_name, s.district as school_district,i.name AS initiative_name, i.grade AS initiative_grade, GROUP_CONCAT(img.imageKey) AS images
       // FROM initiative AS i
       // JOIN user AS u ON i.userId = u.id
@@ -36,9 +43,6 @@ export const handler = async (event) => {
       LEFT JOIN image AS img ON i.id = img.initiativeId
       WHERE u.schoolId = ?
       GROUP BY u.id, u.firstName,u.lastName;`
-    }
-    
-    
 
     LOGGER.info(reqId, componentName, 'seach query to be executed', searchQuery);
     const dbResp = await dbExecuteQuery(searchQuery,[queryParams.schoolId]);
