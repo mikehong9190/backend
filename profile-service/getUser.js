@@ -67,6 +67,7 @@ export const handler = async (event) => {
     
     userData['schoolName'] = school?.name?school.name:'';
     userData['schoolDistrict'] = school?.district?school?.district:'';
+    userData['schoolId'] = user.schoolId
     }
     
 

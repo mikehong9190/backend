@@ -11,3 +11,7 @@ export const createInitiativeSchema = Joi.object({
 })
 .options({ allowUnknown: false });
 
+export const getInitiativeSchema = Joi.object({
+  id:Joi.string().required(),
+})
+.options({ allowUnknown: false });
