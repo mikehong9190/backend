@@ -44,6 +44,12 @@ functions:
       - httpApi:
           path: /v1/create-initiative
           method: post
+  update:
+    handler: update.handler
+    events:
+      - httpApi:
+          path: /v1/update-initiative
+          method: put
   getUserInitiatives:
     handler: getUserInitiatives.handler
     events:
