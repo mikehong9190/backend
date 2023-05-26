@@ -11,6 +11,13 @@ export const createInitiativeSchema = Joi.object({
 })
 .options({ allowUnknown: false });
 
+export const updateInitiativeSchema = Joi.object({
+  id: Joi.string().required(),
+  userId:Joi.string().required(),
+  files:Joi.array().required()
+})
+.options({ allowUnknown: false });
+
 export const getInitiativeSchema = Joi.object({
   id:Joi.string().required(),
 })
