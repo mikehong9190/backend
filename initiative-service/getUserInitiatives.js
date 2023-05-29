@@ -28,7 +28,7 @@ export const handler = async (event) => {
 
     // Get user's initiatives
     const initiative = await dbExecuteQuery(
-      `SELECT i.id ,i.target, i.numberOfStudents,i.grade, i.name, GROUP_CONCAT(img.imageKey) AS images
+      `SELECT i.id ,i.target,i.initiativeTypeId, i.numberOfStudents,i.grade, i.name, GROUP_CONCAT(img.imageKey) AS images
       FROM initiative AS i
       JOIN image AS img ON i.id = img.initiativeId
       WHERE i.userId = ?
