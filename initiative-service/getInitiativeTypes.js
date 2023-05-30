@@ -11,7 +11,7 @@ export const handler = async () => {
   const reqId = nanoid();
   try {
     LOGGER.info(reqId, componentName, "Get Initiative types", null);
-    const query = `SELECT * FROM initiativeType ORDER BY createdAt DESC`;
+    const query = `SELECT * FROM initiativeType WHERE status='active' ORDER BY createdAt DESC`;
     const dbResp = await dbExecuteQuery(query);
 
     // finally return response
