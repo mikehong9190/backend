@@ -1,0 +1,13 @@
+{
+  "name": "swiirl-root-index",
+  "version": "1.0.0",
+  "description": "root service of swiirl backend",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {},
+  "devDependencies": {},
+  "dependencies": {
+    "jsonwebtoken": "^9.0.0",
+    "nanoid": "^4.0.0"
+  }
+}

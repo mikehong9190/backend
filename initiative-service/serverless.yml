@@ -47,12 +47,18 @@ functions:
       - httpApi:
           path: /v1/create-initiative
           method: post
+          authorizer:
+            type: request
+            id: !ImportValue SwiirlGatewayAuthorizerId
   update:
     handler: update.handler
     events:
       - httpApi:
           path: /v1/update-initiative
           method: put
+          authorizer:
+            type: request
+            id: !ImportValue SwiirlGatewayAuthorizerId
   getUserInitiatives:
     handler: getUserInitiatives.handler
     events:

@@ -46,6 +46,9 @@ functions:
       - httpApi:
           path: /v1/update-profile
           method: put
+          authorizer:
+            type: request
+            id: !ImportValue SwiirlGatewayAuthorizerId
   getUser:
     handler: getUser.handler
     events:
