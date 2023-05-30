@@ -88,13 +88,15 @@ export const handler = async (event) => {
       let initiatives = dbResp?.initiatives?.split(',')
 
     //Getting user's initiative images
+    const imageKeys = initiatives.map(initiative => `'${initiative}'`).join(',');
     const images = await dbExecuteQuery(`
         SELECT 
-        GROUP_CONCAT(i.imageKey) AS images
+        i.imageKey AS image
         FROM image i
-        WHERE i.initiativeId IN (?)`,[initiatives])
-    
-    let allImages = images[0]?.images?.split(',').map(str => `https://${SWIIRL_INITIATIVE_BUCKET}.s3.amazonaws.com/` + str);
+        WHERE i.initiativeId IN (${imageKeys})`);
+        
+    let allImages = images.map(image => `https://${SWIIRL_INITIATIVE_BUCKET}.s3.amazonaws.com/${image.image}`);
+
     userData['collectibles'] = allImages?allImages:[]
     
     }
