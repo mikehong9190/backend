@@ -1,6 +1,7 @@
-import mysql from 'mysql';
+// import mysql from 'mysql';
+const mysql = require('mysql');
 
-export const pool  = mysql.createPool({
+const pool  = mysql.createPool({
   connectionLimit : 2,
   host     : process.env.DB_HOST,
   user     : process.env.DB_USERNAME,
@@ -8,7 +9,7 @@ export const pool  = mysql.createPool({
   database : process.env.DB_NAME
 });
 
-export const dbExecuteQuery = (query,params=null) => {
+const dbExecuteQuery = (query,params=null) => {
   return new Promise((resolve, reject)=>{
     pool.query({
       sql:query,
@@ -20,3 +21,5 @@ export const dbExecuteQuery = (query,params=null) => {
     });
 });
 }
+
+module.exports = {dbExecuteQuery,pool}

@@ -1,4 +1,6 @@
-import LOGGER from './logger.js';
+// import LOGGER from './logger.js';
+const LOGGER = require('./logger.js');
+
 
 const componentName = 'auth-service/sendResponse';
 
@@ -18,4 +20,5 @@ const sendResponse = (reqId, statusCode, data) => {
   };
 };
 
-export default sendResponse;
+// export default sendResponse;
+module.exports = {sendResponse}

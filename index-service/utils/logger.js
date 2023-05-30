@@ -48,4 +48,5 @@ const LOGGER  = {
   }
 };
 
-export default LOGGER;
+// export default LOGGER;
+module.exports = {LOGGER}

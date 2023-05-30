@@ -26,13 +26,6 @@ const handler = async (event) => {
         const decoded = jwt.verify(token, `${process.env.JWT_SECRET}`);
         const userId = decoded.id;
 
-        const connection = await mysql.createConnection({
-            host: process.env.DB_HOST_NAME,
-            user: process.env.DB_USER_NAME,
-            password: process.env.DB_PASSWORD,
-            database: process.env.DB_NAME,
-        });
-
         const [user] = await dbExecuteQuery('SELECT * FROM user WHERE id = ?', [userId]);
         if (user.length > 0) {
             response.isAuthorized = true;

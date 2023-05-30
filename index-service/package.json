@@ -8,6 +8,7 @@
   "devDependencies": {},
   "dependencies": {
     "jsonwebtoken": "^9.0.0",
-    "nanoid": "^4.0.0"
+    "nanoid": "^4.0.0",
+    "mysql": "^2.18.1"
   }
 }
