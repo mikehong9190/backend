@@ -71,7 +71,7 @@ resources:
             - ":apigateway:"
             - !Ref "AWS::Region"
             - ":lambda:path/2015-03-31/functions/"
-            - !Sub "arn:aws:lambda:${self:provider.region}:${aws:accountId}:function:root-index-${self:provider.stage}-lambdaAuthorizer"
+            - !Sub "arn:aws:lambda:${self:provider.region}:${aws:accountId}:function:swiirl-root-${self:provider.stage}-lambdaAuthorizer"
             - /invocations
   Outputs:
     SwiirlHttpApiId:

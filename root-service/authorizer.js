@@ -1,13 +1,9 @@
-// import jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 // import LOGGER from './utils/logger.js';
 // import sendResponse from './utils/sendResponse.js';
-// import { dbExecuteQuery } from './utils/dbConnect.js';
-const jwt = require('jsonwebtoken');
-const LOGGER = require('./utils/logger.js');
-const sendResponse = require('./utils/sendResponse.js');
-const { dbExecuteQuery } = require('./utils/dbConnect.js');
+import { dbExecuteQuery } from './utils/dbConnect.js';
 
-const handler = async (event) => {
+export const handler = async (event) => {
     let token = '';
     console.log('--> Event', event);
     const response = {
@@ -22,14 +18,13 @@ const handler = async (event) => {
     }
 
     try {
-
         const decoded = jwt.verify(token, `${process.env.JWT_SECRET}`);
         const userId = decoded.id;
-
         const [user] = await dbExecuteQuery('SELECT * FROM user WHERE id = ?', [userId]);
-        if (user.length > 0) {
+        if (user.id) {
+        // console.log('user----',user)
             response.isAuthorized = true;
-            response.context = { 'userId': user[0].id };
+            response.context = { 'userId': user.id };
             return response;
         }
         else {
@@ -41,6 +36,3 @@ const handler = async (event) => {
         return response;
     }
 };
-
-
-module.exports = {handler}

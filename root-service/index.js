@@ -1,9 +1,10 @@
-const LOGGER = require('./utils/logger.js');
-const nanoid = require('nanoid');
-const sendResponse = require('./utils/sendResponse.js');
-const componentName = 'root.index.index';
+import { nanoid } from 'nanoid';
+import LOGGER from './utils/logger.js';
+import sendResponse from './utils/sendResponse.js';
 
-const handler = async (event) => {
+const componentName = 'index-service/index';
+
+export const handler = async (event) => {
   const reqId = nanoid();
 
   LOGGER.info(reqId, componentName, 'Event :: ', event);
@@ -16,5 +17,3 @@ const handler = async (event) => {
     }, body: { message: 'Root is alive' }
   });
 };
-
-module.exports = {handler}

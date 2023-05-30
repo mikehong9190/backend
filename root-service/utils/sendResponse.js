@@ -1,8 +1,6 @@
-// import LOGGER from './logger.js';
-const LOGGER = require('./logger.js');
+import LOGGER from './logger.js';
 
-
-const componentName = 'auth-service/sendResponse';
+const componentName = 'school-service/sendResponse';
 
 const sendResponse = (reqId, statusCode, data) => {
   const responseHeaders = {
@@ -20,5 +18,4 @@ const sendResponse = (reqId, statusCode, data) => {
   };
 };
 
-// export default sendResponse;
-module.exports = {sendResponse}
+export default sendResponse;
