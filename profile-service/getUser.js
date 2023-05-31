@@ -86,19 +86,21 @@ export const handler = async (event) => {
     
     if(dbResp){
       let initiatives = dbResp?.initiatives?.split(',')
-
-    //Getting user's initiative images
-    const imageKeys = initiatives.map(initiative => `'${initiative}'`).join(',');
+    if(initiatives){
+      //Getting user's initiative images
+    const imageKeys = initiatives?.map(initiative => `'${initiative}'`).join(',');
     const images = await dbExecuteQuery(`
         SELECT 
         i.imageKey AS image
         FROM image i
         WHERE i.initiativeId IN (${imageKeys})`);
         
-    let allImages = images.map(image => `https://${SWIIRL_INITIATIVE_BUCKET}.s3.amazonaws.com/${image.image}`);
-
-    userData['collectibles'] = allImages?allImages:[]
-    
+    let allImages = images?.map(image => `https://${SWIIRL_INITIATIVE_BUCKET}.s3.amazonaws.com/${image.image}`);
+    userData['collectibles'] = allImages
+    }
+    else{
+      userData['collectibles']=[]
+    }   
     }
     
     LOGGER.info(reqId, componentName, 'Response from DB :: ',userData);
