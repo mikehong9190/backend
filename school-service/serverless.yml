@@ -12,6 +12,7 @@ custom:
   region: ${file(../serverless-config.json):region}
   stage: ${file(../serverless-config.json):stage}
   SwiirlInitiativeAssetsBucketName: ${file(../serverless-config.json):swiirlInitiativeAssetsBucketName}-${self:custom.stage}
+  SwiirlSchoolAssetsBucketName: ${file(../serverless-config.json):swiirlSchoolAssetsBucketName}-${self:custom.stage}
 
 provider:
   name: aws
@@ -26,6 +27,7 @@ provider:
     DB_PASSWORD: ${env:DB_PASSWORD}
     DB_NAME: ${env:DB_NAME}
     SWIIRL_INITIATIVE_BUCKET: ${self:custom.SwiirlInitiativeAssetsBucketName}
+    SWIIRL_SCHOOL_BUCKET: ${self:custom.SwiirlSchoolAssetsBucketName}
 
   lambdaHashingVersion: 20201221
   httpApi:
@@ -44,3 +46,12 @@ functions:
       - httpApi:
           path: /v1/school
           method: get
+  update:
+    handler: update.handler
+    events:
+      - httpApi:
+          path: /v1/school/update
+          method: put
+          authorizer:
+            type: request
+            id: !ImportValue SwiirlGatewayAuthorizerId

@@ -7,9 +7,11 @@
   "dependencies": {
     "joi": "^17.9.2",
     "mysql": "^2.18.1",
-    "nanoid": "^4.0.2"
+    "nanoid": "^4.0.2",
+    "lambda-multipart-parser": "^1.0.1"
   },
   "devDependencies": {
+    "aws-sdk": "^2.1373.0",
     "dotenv": "^16.0.3",
     "serverless-offline": "^12.0.4"
   }

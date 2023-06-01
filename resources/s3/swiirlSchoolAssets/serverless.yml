@@ -1,0 +1,50 @@
+service: swiirl-school-assets
+
+frameworkVersion: "3"
+
+projectDir: ./
+
+custom:
+  region: ${file(../../../serverless-config.json):region}
+  stage: ${file(../../../serverless-config.json):stage}
+  SwiirlSchoolAssetsBucketName: ${file(../../../serverless-config.json):swiirlSchoolAssetsBucketName}-${self:custom.stage}
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  region: ${self:custom.region}
+  stage: ${self:custom.stage}
+
+resources:
+  Resources:
+    SwiirlSchoolBucket:
+      Type: "AWS::S3::Bucket"
+      DeletionPolicy: Retain
+      Properties:
+        BucketName: ${self:custom.SwiirlSchoolAssetsBucketName}
+        # AccessControl: PublicRead
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: false
+        OwnershipControls:
+          Rules:
+            - ObjectOwnership: ObjectWriter
+
+    SwiirlSchoolBucketAllowPublicReadPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: !Ref SwiirlSchoolBucket
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - "s3:*"
+              Resource:
+                - arn:aws:s3:::${self:custom.SwiirlSchoolAssetsBucketName}/*
+              Principal: "*"
+
+  Outputs:
+    SwiirlSchoolBucketArn:
+      Value: !GetAtt SwiirlSchoolBucket.Arn
+      Export:
+        Name: SwiirlSchoolBucketArn

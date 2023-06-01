@@ -4,6 +4,8 @@
   "stage": "dev",
   "account": "221225726826",
   "swiirlUserAssetsBucketName": "swiirl-user-assets",
-  "swiirlInitiativeAssetsBucketName": "swiirl-initiative-assets"
+  "swiirlInitiativeAssetsBucketName": "swiirl-initiative-assets",
+  "swiirlSchoolAssetsBucketName": "swiirl-school-assets"
+
 
 }

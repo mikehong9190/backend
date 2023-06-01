@@ -14,3 +14,13 @@ export const searchSchema = Joi.object({
 })
 .options({ allowUnknown: false });
 
+export const updateSchoolSchema = Joi.object({
+        userId:Joi.string().required(),
+        schoolId:Joi.string().required(),
+        name: Joi.string().optional(),
+        district:Joi.string().optional(),
+        description:Joi.string().optional(),
+        files:Joi.array().optional(),
+      })
+      .options({ allowUnknown: false });
+

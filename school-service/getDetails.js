@@ -6,6 +6,8 @@ import { dbExecuteQuery } from './utils/dbConnect.js';
 
 const componentName = 'school-service/getDetails';
 const SWIIRL_INITIATIVE_BUCKET = process.env.SWIIRL_INITIATIVE_BUCKET;
+const SWIIRL_SCHOOL_BUCKET = process.env.SWIIRL_SCHOOL_BUCKET;
+
 
 // Lambda Handler
 export const handler = async (event) => {
@@ -51,6 +53,13 @@ export const handler = async (event) => {
     }
 
     // Format the response data
+    let data = {}
+    data['school'] = {
+      name:school.name,
+      district:school.district,
+      description:school.description,
+      image:`https://${SWIIRL_SCHOOL_BUCKET}.s3.amazonaws.com/${school.imageKey}`
+    }
     const responseData = [];
     for (const [userFullName, userImages] of userImagesMap) {
       responseData.push({
@@ -59,9 +68,11 @@ export const handler = async (event) => {
         images: userImages,
       });
     }
+    data['data'] = responseData
+    console.log('data------',data)
 
     // Return the response
-    return sendResponse(reqId, 200, { message: 'success', data: responseData });
+    return sendResponse(reqId, 200, { message: 'success', data: data });
   } catch (error) {
     LOGGER.error(reqId, componentName, 'Exception raised', error);
     return sendResponse(reqId, 500, {
