@@ -57,8 +57,8 @@ export const handler = async (event) => {
     data['school'] = {
       name:school.name,
       district:school.district,
-      description:school.description,
-      image:`https://${SWIIRL_SCHOOL_BUCKET}.s3.amazonaws.com/${school.imageKey}`
+      description:school.description?school.description:null,
+      image:school.imageKey!==null || school.imageKey?.length>0?`https://${SWIIRL_SCHOOL_BUCKET}.s3.amazonaws.com/${school.imageKey}`:null
     }
     const responseData = [];
     for (const [userFullName, userImages] of userImagesMap) {
