@@ -64,7 +64,7 @@ export const handler = async (event) => {
     if (parsedBody.files.length > 0) {
       const imageParams = {
         Bucket: SWIIRL_SCHOOL_BUCKET,
-        Key: `${updatedSchoolData['name']}/${itemId}.${parsedBody.files[0].filename.split('.').pop()}`,
+        Key: `${updatedSchoolData['name']}/${itemId}.${parsedBody.files[0].filename?.split('.').pop()}`,
         Body: parsedBody.files[0].content,
         ContentType: parsedBody.files[0].contentType,
         ContentEncoding: parsedBody.files[0].encoding
@@ -77,7 +77,7 @@ export const handler = async (event) => {
       }
 
       const s3Response = await s3.putObject(imageParams).promise();
-      updatedSchoolData['imageKey'] = `${updatedSchoolData['name']}/${itemId}.${parsedBody.files[0].filename.split('.').pop()}`;
+      updatedSchoolData['imageKey'] = `${updatedSchoolData['name']}/${itemId}.${parsedBody.files[0].filename?.split('.').pop()}`;
       LOGGER.info(reqId, componentName, 'Response from S3 :: ', s3Response);
     }
 
