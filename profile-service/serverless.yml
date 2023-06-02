@@ -44,7 +44,7 @@ functions:
     handler: updateProfile.handler
     events:
       - httpApi:
-          path: /v1/update-profile
+          path: /v1/user/update
           method: put
           authorizer:
             type: request
@@ -53,11 +53,11 @@ functions:
     handler: getUser.handler
     events:
       - httpApi:
-          path: /v1/users
+          path: /v1/user/get-all
           method: get
   resetPassword:
     handler: resetPassword.handler
     events:
       - httpApi:
-          path: /v1/reset-password
+          path: /v1/user/reset-password
           method: post

@@ -39,13 +39,13 @@ functions:
     handler: getInitiativeTypes.handler
     events:
       - httpApi:
-          path: /v1/initiative-types
+          path: /v1/initiative/types
           method: get
   create:
     handler: createInitiative.handler
     events:
       - httpApi:
-          path: /v1/create-initiative
+          path: /v1/initiative/create
           method: post
           authorizer:
             type: request
@@ -54,7 +54,7 @@ functions:
     handler: update.handler
     events:
       - httpApi:
-          path: /v1/update-initiative
+          path: /v1/initiative/update
           method: put
           authorizer:
             type: request
@@ -63,11 +63,11 @@ functions:
     handler: getUserInitiatives.handler
     events:
       - httpApi:
-          path: /v1/get-user-initiatives
+          path: /v1/initiative/get-all
           method: get
   getPresignedURL:
     handler: getPresignedUrl.handler
     events:
       - httpApi:
-          path: /v1/get-presigned-urls
+          path: /v1/initiative/get-presigned-urls
           method: post

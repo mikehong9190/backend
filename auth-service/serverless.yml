@@ -20,7 +20,7 @@ provider:
   region: ${self:custom.region}
   stage: ${self:custom.stage}
   profile: swiirl
-  timeout: 200
+  timeout: 15
   environment:
     REGION: ${self:custom.region}
     DB_HOST: ${env:DB_HOST}
@@ -46,35 +46,35 @@ functions:
     handler: login.handler
     events:
       - httpApi:
-          path: /v1/login
+          path: /v1/auth/login
           method: post
   signup:
     handler: signup.handler
     events:
       - httpApi:
-          path: /v1/signup
+          path: /v1/auth/signup
           method: post
   updateSchool:
     handler: addSchoolDetails.handler
     events:
       - httpApi:
-          path: /v1/update-school-details
+          path: /v1/auth/update-school-details
           method: put
   validateEmail:
     handler: validateEmail.emailhandler
     events:
       - httpApi:
-          path: /v1/validate-email
+          path: /v1/auth/validate-email
           method: post
   sendOTP:
     handler: sendOTP.handler
     events:
       - httpApi:
-          path: /v1/send-otp
+          path: /v1/auth/send-otp
           method: post
   verifyOTP:
     handler: verifyOTP.handler
     events:
       - httpApi:
-          path: /v1/verify-otp
+          path: /v1/auth/verify-otp
           method: post
