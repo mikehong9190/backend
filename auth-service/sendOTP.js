@@ -39,14 +39,10 @@ export const handler = async (event) => {
     const type = body['requestType']==='email'?'verify-email':'reset-password'
 
     const sendEmailParams = {
-        Source: 'punnitbhesota@gmail.com',
+        Source: 'noreply@swiirl.io',
         Destination: {
             ToAddresses: [
-               //'aadesh10kamble@gmail.com',
-              // 'punnitbhesota@gmail.com'
-              body['emailId'],
-            // 'amanattrish@yahoo.com',
-            // "swiirl-user@mailinator.com",      
+              body['emailId'],      
             ],
         },
         Message: {
