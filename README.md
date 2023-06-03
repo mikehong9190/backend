@@ -37,19 +37,150 @@
 The Auth Service handles user authentication and authorization and more
 
 # Endpoints
+## PUT /update-school-details (Creating School)
+### Description : Create a School instant and add it to google user.
+### Request Body:
+   | Fields       | Data type          |
+| ------------- |:-------------:|
+| id     | String |
+| createSchool      | String ("true" OR "false")     |
+| districtName | String      |   
+| schoolName | String      |  
 
-# POST /auth/signup
+## PUT /update-school-details (existing School)
 
-# Description: Register a new user.
+## Description : Add existing school details to google user.
+### Request Body 
+   | Fields       | Data type          |
+| ------------- |:-------------:|
+| id     | String |
+| createSchool      | Value "false"     |
+| schoolId | String      |   
 
-# Request Body:
+## POST /auth/login
+### Description: User login.
+### Request Body:
+   | Fields       | Data type          |
+| ------------- |:-------------:|
+| emailId      | String     |
+| password | String      | 
 
-# Response:
+## POST /auth/send-otp
+### Description : Send OTP to the email 
+### Request Body :
+   | Fields       | Data type          |
+| ------------- |:-------------:|
+| emailId      | String     |
+| requestType | String      | 
 
-# POST /auth/login
+## POST /auth/signup
+ ### Description: Register a new user.
+### Request Body:
+   | Fields       | Data type          |
+| ------------- |:-------------:|
+| firstName     | String     |
+| lastName | String      | 
+| emailId      | String     |
+| createSchool | String      | 
+| districtName      | String     |
+| schoolName | String      | 
+| password      | String     |
 
-# Description: User login.
+## POST /auth/validate-email
+### Description : Valid the email 
+### Request Body :
+   | Fields       | Data type          |
+| ------------- |:-------------:|
+| emailId     | String     |
 
-# Request Body:
+## POST /auth/verify-otp
+### Description : Verifies the OTP
+   | Fields       | Data type          |
+| ------------- |:-------------:|
+| emailId     | String     |
+| otp     | String     |
+| requestType     | String ("reset-password" OR "email")     |
 
-# Response:
+
+## GET /initiative/create
+### Description : Create Initiatives
+   | Fields       | Data type          |
+| ------------- |:-------------:|
+| userId     | String     |
+| imageKeys     | Array     |
+| initiativeId     | String     |
+
+
+## GET /initiative-types
+### Description : Gets all the initiatives
+## Request Body : Not required
+
+## POST /initiative/get-presigned-urls
+### Description : Get all the presigned url
+## Request Body :
+   | Fields       | Data type          |
+| ------------- |:-------------:|
+| userId     | String     |
+| contentType     | Array     |
+| initiative     | String     |
+
+## GET /initiative/get-all
+### Description : Get all user initiatives 
+### Resquest Body : 
+   | Fields       | Data type          |
+| ------------- |:-------------:|
+| id     | String     |
+
+## GET /user/get-all
+### Description : Get user details
+### Request Body : 
+   | Fields       | Data type          |
+| ------------- |:-------------:|
+| id     | String     |
+
+## POST /user/reset-password 
+### Description : Reset User password
+### Request Body :
+   | Fields       | Data type          |
+| ------------- |:-------------:|
+| password    | String     |
+| emailId | String     |
+| userId    | String     |
+
+## PUT /user/update
+### Description : Update user Profile 
+### Request Body :
+   | Fields       | Data type          |
+| ------------- |:-------------:|
+| firstName    | String     |
+| lastName | String     |
+| picture    | File     |
+| id    | String     |
+| bio    | String     |
+
+
+## GET /school
+### Description : Get school Details 
+### Request Body :
+   | Fields       | Data type          |
+| ------------- |:-------------:|
+| schoolId    | String     |
+
+### GET /school/search
+### Description : Search Schools
+### Query Parameter : 
+   | Fields       |
+| ------------- |
+| text    |
+| limit    |
+
+## PUT /school/update
+Description : Update School Details
+Request Body : 
+   | Fields       | Data type          |
+| ------------- |:-------------:|
+| name    | String     |
+| userId    | String     |
+| district   | String     |
+|description    | String     |
+| file   | File     |
