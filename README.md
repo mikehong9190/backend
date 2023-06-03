@@ -110,6 +110,12 @@ The Auth Service handles user authentication and authorization and more
 | userId     | String     |
 | imageKeys     | Array     |
 | initiativeId     | String     |
+| name     | String     |
+| target     | Array     |
+| grade     | String     |
+|  initiativeTypeId   | String     |
+| imageKeys     | Array     |
+| numberOfStudents     | Number    |
 
 ### PUT /initiative/update
 #### Description : Update Initiatives
