@@ -2,6 +2,15 @@
 
 # This documentation provides an overview of the serverless Node.js backend and its services.
 
+# Run lambdas offline
+    Step 1: Go to root of the service folder in terminal (Eg. backend/auth-service/ )
+    Step 2: Run serverless offline
+
+# Update lambdas and deploy changes
+    Step 1: Same as above
+    Step 2: (a)Deploy whole service : serverless deploy --aws-profile <profile-name>
+            (b)Deploy particular function from service : serverless deploy --function <function-name> --aws-profile <profile-name>
+
 # Table of Contents
 
 1. auth-service
