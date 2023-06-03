@@ -37,19 +37,39 @@
 The Auth Service handles user authentication and authorization and more
 
 # Endpoints
+## PUT /update-school-details (Creating School)
+### Description : Create a School instant and add it to google user.
+### Request Body:
+   | Fields       | Data type          |
+| ------------- |:-------------:|
+| id     | String |
+| createSchool      | String ("true" OR "false")     |
+| districtName | String      |   
+| schoolName | String      |  
 
-# POST /auth/signup
-
-# Description: Register a new user.
-
-# Request Body:
+## POST /auth/signup
+ ### Description: Register a new user.
+### Request Body:
+{
+  "firstname":"",
+  "lastname":"",
+  "emailId":"",
+  "createSchool":"",
+  "districtName":"",
+  "schoolName":"",
+  "password":""
+}
 
 # Response:
 
-# POST /auth/login
-
-# Description: User login.
-
-# Request Body:
+## POST /auth/login
+### Description: User login.
+### Request Body:
+{
+    "emailId": "andrew@example.com",
+    "password": "Password@12345"
+}
 
 # Response:
+
+
