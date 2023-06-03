@@ -75,7 +75,7 @@ The Auth Service handles user authentication and authorization and more
 | requestType | String      | 
 
 ### POST /auth/signup
- #### Description: Register a new user.
+#### Description: Register a new user.
 #### Request Body:
    | Fields       | Data type          |
 | ------------- |:-------------:|
