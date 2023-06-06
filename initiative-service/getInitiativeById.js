@@ -30,7 +30,7 @@ export const handler = async (event) => {
     const initiative = await dbExecuteQuery(
       `SELECT i.id ,i.target,i.initiativeTypeId, i.numberOfStudents,i.grade, i.name, GROUP_CONCAT(img.imageKey) AS images
       FROM initiative AS i
-      JOIN image AS img ON i.id = img.initiativeId
+      LEFT JOIN image AS img ON i.id = img.initiativeId
       WHERE i.id=?`, id
     );
 
@@ -40,7 +40,7 @@ export const handler = async (event) => {
     if (initiative.length==0) {
       return sendResponse(reqId, 404, 'Initiative Not found');
     }
-    let images = initiative[0].images?.split(',').map(str => `https://${SWIIRL_INITIATIVE_BUCKET}.s3.amazonaws.com/` + str);
+    let images = initiative[0].images?.split(',').map(str => `https://${SWIIRL_INITIATIVE_BUCKET}.s3.amazonaws.com/` + str) || [];
     initiative[0].images = images
     
 

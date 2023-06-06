@@ -30,7 +30,7 @@ export const handler = async (event) => {
     const initiative = await dbExecuteQuery(
       `SELECT i.id ,i.target,i.initiativeTypeId, i.numberOfStudents,i.grade, i.name, GROUP_CONCAT(img.imageKey) AS images
       FROM initiative AS i
-      JOIN image AS img ON i.id = img.initiativeId
+      LEFT JOIN image AS img ON i.id = img.initiativeId
       WHERE i.userId = ?
       GROUP BY i.id
       ORDER BY i.createdAt DESC;`, id
@@ -42,7 +42,7 @@ export const handler = async (event) => {
     }
 
     for(let i=0;i<=initiative.length-1;i++){
-        let images = initiative[i].images?.split(',').map(str => `https://${SWIIRL_INITIATIVE_BUCKET}.s3.amazonaws.com/` + str);
+        let images = initiative[i].images?.split(',').map(str => `https://${SWIIRL_INITIATIVE_BUCKET}.s3.amazonaws.com/` + str)||[];
         initiative[i].images = images
     }
     
