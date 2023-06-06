@@ -71,3 +71,18 @@ functions:
       - httpApi:
           path: /v1/initiative/get-presigned-urls
           method: post
+  getInitiativeById:
+    handler: getInitiativeById.handler
+    events:
+      - httpApi:
+          path: /v1/initiative/getInitiativeById
+          method: get
+  deleteImage:
+    handler: deleteImage.handler
+    events:
+      - httpApi:
+          path: /v1/initiative/deleteImage
+          method: delete
+          authorizer:
+            type: request
+            id: !ImportValue SwiirlGatewayAuthorizerId

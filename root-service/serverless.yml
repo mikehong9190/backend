@@ -30,6 +30,7 @@ provider:
         - GET
         - POST
         - PUT
+        - DELETE
       allowedHeaders:
         - "*"
     authorizers:

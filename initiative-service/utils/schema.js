@@ -24,3 +24,9 @@ export const getInitiativeSchema = Joi.object({
   id:Joi.string().required(),
 })
 .options({ allowUnknown: false });
+
+
+export const deleteImageSchema = Joi.object({
+  imageKeys:Joi.array().required()
+})
+.options({ allowUnknown: false });
