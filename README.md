@@ -2,6 +2,15 @@
 
 # This documentation provides an overview of the serverless Node.js backend and its services.
 
+# Run lambdas offline
+    Step 1: Go to root of the service folder in terminal (Eg. backend/auth-service/ )
+    Step 2: Run serverless offline
+
+# Update lambdas and deploy changes
+    Step 1: Same as above
+    Step 2: (a)Deploy whole service : serverless deploy --aws-profile <profile-name>
+            (b)Deploy particular function from service : serverless deploy --function <function-name> --aws-profile <profile-name>
+
 # Table of Contents
 
 1. auth-service
@@ -37,9 +46,10 @@
 The Auth Service handles user authentication and authorization and more
 
 # Endpoints
-## PUT /update-school-details (Creating School)
-### Description : Create a School instant and add it to google user.
-### Request Body:
+## Auth Service
+### PUT /update-school-details (Creating School)
+#### Description : Create a School instant and add it to google user.
+#### Request Body:
    | Fields       | Data type          |
 | ------------- |:-------------:|
 | id     | String |
@@ -47,35 +57,35 @@ The Auth Service handles user authentication and authorization and more
 | districtName | String      |   
 | schoolName | String      |  
 
-## PUT /update-school-details (existing School)
+### PUT /update-school-details (existing School)
 
-## Description : Add existing school details to google user.
-### Request Body 
+### Description : Add existing school details to google user.
+#### Request Body 
    | Fields       | Data type          |
 | ------------- |:-------------:|
 | id     | String |
 | createSchool      | Value "false"     |
 | schoolId | String      |   
 
-## POST /auth/login
-### Description: User login.
-### Request Body:
+### POST /auth/login
+#### Description: User login.
+#### Request Body:
    | Fields       | Data type          |
 | ------------- |:-------------:|
 | emailId      | String     |
 | password | String      | 
 
-## POST /auth/send-otp
-### Description : Send OTP to the email 
-### Request Body :
+### POST /auth/send-otp
+#### Description : Send OTP to the email 
+#### Request Body :
    | Fields       | Data type          |
 | ------------- |:-------------:|
 | emailId      | String     |
 | requestType | String      | 
 
-## POST /auth/signup
- ### Description: Register a new user.
-### Request Body:
+### POST /auth/signup
+#### Description: Register a new user.
+#### Request Body:
    | Fields       | Data type          |
 | ------------- |:-------------:|
 | firstName     | String     |
@@ -86,70 +96,84 @@ The Auth Service handles user authentication and authorization and more
 | schoolName | String      | 
 | password      | String     |
 
-## POST /auth/validate-email
-### Description : Valid the email 
-### Request Body :
+### POST /auth/validate-email
+#### Description : Valid the email 
+#### Request Body :
    | Fields       | Data type          |
 | ------------- |:-------------:|
 | emailId     | String     |
 
-## POST /auth/verify-otp
-### Description : Verifies the OTP
+### POST /auth/verify-otp
+#### Description : Verifies the OTP
    | Fields       | Data type          |
 | ------------- |:-------------:|
 | emailId     | String     |
 | otp     | String     |
 | requestType     | String ("reset-password" OR "email")     |
 
+## Initiative Service
+### PUT /initiative/create
+#### Description : Create Initiatives
+   | Fields       | Data type          |
+| ------------- |:-------------:|
+| userId     | String     |
+| imageKeys     | Array     |
+| initiativeId     | String     |
+| name     | String     |
+| target     | Array     |
+| grade     | String     |
+|  initiativeTypeId   | String     |
+| imageKeys     | Array     |
+| numberOfStudents     | Number    |
 
-## GET /initiative/create
-### Description : Create Initiatives
+### PUT /initiative/update
+#### Description : Update Initiatives
    | Fields       | Data type          |
 | ------------- |:-------------:|
 | userId     | String     |
 | imageKeys     | Array     |
 | initiativeId     | String     |
 
+### GET /initiative-types
+#### Description : Gets all the initiatives
+#### Request Body : Not required
 
-## GET /initiative-types
-### Description : Gets all the initiatives
-## Request Body : Not required
-
-## POST /initiative/get-presigned-urls
-### Description : Get all the presigned url
-## Request Body :
+### POST /initiative/get-presigned-urls
+#### Description : Get all the presigned url
+#### Request Body :
    | Fields       | Data type          |
 | ------------- |:-------------:|
 | userId     | String     |
 | contentType     | Array     |
 | initiative     | String     |
 
-## GET /initiative/get-all
-### Description : Get all user initiatives 
-### Resquest Body : 
+### GET /initiative/get-all
+#### Description : Get all user initiatives 
+#### Resquest Body : 
    | Fields       | Data type          |
 | ------------- |:-------------:|
 | id     | String     |
 
-## GET /user/get-all
-### Description : Get user details
-### Request Body : 
+## User Service
+### GET /user/get-all
+#### Description : Get user details
+#### Request Body : 
    | Fields       | Data type          |
 | ------------- |:-------------:|
 | id     | String     |
 
-## POST /user/reset-password 
-### Description : Reset User password
-### Request Body :
+### POST /user/reset-password 
+#### Description : Reset User password
+#### Request Body :
    | Fields       | Data type          |
 | ------------- |:-------------:|
 | password    | String     |
 | emailId | String     |
 | userId    | String     |
 
-## PUT /user/update
-### Description : Update user Profile 
-### Request Body :
+### PUT /user/update
+#### Description : Update user Profile 
+#### Request Body :
    | Fields       | Data type          |
 | ------------- |:-------------:|
 | firstName    | String     |
@@ -159,24 +183,25 @@ The Auth Service handles user authentication and authorization and more
 | bio    | String     |
 
 
-## GET /school
-### Description : Get school Details 
-### Request Body :
+### GET /school
+#### Description : Get school Details 
+#### Request Body :
    | Fields       | Data type          |
 | ------------- |:-------------:|
 | schoolId    | String     |
 
 ### GET /school/search
-### Description : Search Schools
-### Query Parameter : 
+#### Description : Search Schools
+#### Query Parameter : 
    | Fields       |
 | ------------- |
 | text    |
 | limit    |
 
-## PUT /school/update
-Description : Update School Details
-Request Body : 
+## School Service
+### PUT /school/update
+#### Description : Update School Details
+#### Request Body : 
    | Fields       | Data type          |
 | ------------- |:-------------:|
 | name    | String     |
