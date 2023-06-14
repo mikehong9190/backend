@@ -55,6 +55,9 @@ functions:
       - httpApi:
           path: /v1/user/get-all
           method: get
+          authorizer:
+            type: request
+            id: !ImportValue SwiirlGatewayAuthorizerId
   resetPassword:
     handler: resetPassword.handler
     events:
