@@ -62,6 +62,7 @@ export const handler = async (event) => {
 
     //handling image
     if (parsedBody.files.length > 0) {
+      //Add New Image
       const imageParams = {
         Bucket: SWIIRL_SCHOOL_BUCKET,
         Key: `${updatedSchoolData['name']}/${itemId}.${parsedBody.files[0].filename?.split('.').pop()}`,
@@ -79,6 +80,19 @@ export const handler = async (event) => {
       const s3Response = await s3.putObject(imageParams).promise();
       updatedSchoolData['imageKey'] = `${updatedSchoolData['name']}/${itemId}.${parsedBody.files[0].filename?.split('.').pop()}`;
       LOGGER.info(reqId, componentName, 'Response from S3 :: ', s3Response);
+
+      //Delete Old Image
+      const deleteParams = {
+        Bucket: SWIIRL_SCHOOL_BUCKET,
+        Key: schoolData.imageKey,
+      };
+      const s3ResponseDelete = await s3.deleteObject(deleteParams).promise();
+      
+      LOGGER.error(reqId, componentName, `S3 Response Delete`, {
+        message: "S3 Response: Delete Old Picture",
+        data: s3ResponseDelete,
+      });
+
     }
 
     // Update the school data in the database

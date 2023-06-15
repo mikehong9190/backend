@@ -47,6 +47,8 @@ export const handler = async (event) => {
 
     //handling image
     if (parsedBody.files.length > 0) {
+
+      //add new image        
       const imageParams = {
         Bucket: SWIIRL_USER_BUCKET,
         Key: `${updatedUserData['firstName']}-${updatedUserData['lastName']}/${itemId}.${parsedBody.files[0].filename.split('.').pop()}`,
@@ -60,10 +62,23 @@ export const handler = async (event) => {
       } else {
         imageParams.ContentType = 'application/octet-stream';
       }
-
       const s3Response = await s3.putObject(imageParams).promise();
       updatedUserData['profilePictureKey'] = `${updatedUserData['firstName']}-${updatedUserData['lastName']}/${itemId}.${parsedBody.files[0].filename.split('.').pop()}`;
-      LOGGER.info(reqId, componentName, 'Response from S3 :: ', s3Response);
+      
+      LOGGER.info(reqId, componentName, 'S3 Response: Add New Profile Picture', s3Response);
+
+      //Delete Old Image
+      const deleteParams = {
+        Bucket: SWIIRL_USER_BUCKET,
+        Key: userData.profilePictureKey,
+      };
+      const s3ResponseDelete = await s3.deleteObject(deleteParams).promise();
+      
+      LOGGER.error(reqId, componentName, `S3 Response Delete`, {
+        message: "S3 Response: Delete Old Profile Picture",
+        data: s3ResponseDelete,
+      });
+      
     }
 
     // Update the user data in the database
