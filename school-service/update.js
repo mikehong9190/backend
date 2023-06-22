@@ -97,11 +97,12 @@ export const handler = async (event) => {
 
     // Update the school data in the database
     const result = await dbExecuteQuery(
-      'UPDATE school SET name = ?,district = ?, description = ? ,imageKey = ? WHERE id = ?;',
-      [updatedSchoolData.name,updatedSchoolData.district, updatedSchoolData.description, updatedSchoolData.imageKey,id]
+      'UPDATE school SET name = ?,district = ?, description = ? ,imageKey = ?,updatedBy=? WHERE id = ?;',
+      [updatedSchoolData.name,updatedSchoolData.district, updatedSchoolData.description, updatedSchoolData.imageKey,userId,id]
     );
-    
     LOGGER.info(reqId, componentName, 'Response from DB :: ', result);
+    LOGGER.info(reqId, componentName, `School Updated By : ${user.firstName}-${user.lastName}`);
+
     return sendResponse(reqId, 200, { message: 'School updated successfully'});
   } 
   catch (error) {

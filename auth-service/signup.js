@@ -66,14 +66,16 @@ export const handler = async (event) => {
     }
 
     if(body['createSchool']==='true'){
-      const insertQuery = `INSERT INTO school(id,district,name,status) VALUES (?,?,?,?);`
-      const insertValues = [customSchoolId,body['districtName'],body['schoolName'],'active'] 
+      const insertQuery = `INSERT INTO school(id,district,name,createdBy,status) VALUES (?,?,?,?,?);`
+      const insertValues = [customSchoolId,body['districtName'],body['schoolName'],itemId,'active'] 
       const result = await dbExecuteQuery(insertQuery,insertValues);
       LOGGER.info(reqId, componentName, 'Response from DB :: ', result);
+      LOGGER.info(reqId, componentName, `School Created By : ${body['firstname']}-${body['lastname']}`);
+
     }
 
     const schoolId = body['createSchool']==='true'?customSchoolId:body['schoolId'];
-    const insertQuery = `INSERT INTO user(id,firstname,lastname,emailId,schoolId,password,loginType,status) VALUES (?,?,?,?,?,?,'default','active');`
+    const insertQuery = `INSERT INTO user(id,firstName,lastName,emailId,schoolId,password,loginType,status) VALUES (?,?,?,?,?,?,'default','active');`
     const insertValues = [itemId,body['firstname'],body['lastname'],body['emailId'],schoolId,hashedPassword]
 
     //If not, inserting user data in the database
