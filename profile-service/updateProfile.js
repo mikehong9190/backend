@@ -68,6 +68,7 @@ export const handler = async (event) => {
       LOGGER.info(reqId, componentName, 'S3 Response: Add New Profile Picture', s3Response);
 
       //Delete Old Image
+      if(userData.profilePictureKey){
       const deleteParams = {
         Bucket: SWIIRL_USER_BUCKET,
         Key: userData.profilePictureKey,
@@ -78,7 +79,7 @@ export const handler = async (event) => {
         message: "S3 Response: Delete Old Profile Picture",
         data: s3ResponseDelete,
       });
-      
+      }
     }
 
     // Update the user data in the database
