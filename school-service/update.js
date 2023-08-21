@@ -22,6 +22,7 @@ export const handler = async (event) => {
 
     // validate request body,
     const { error, value } = await updateSchoolSchema.validate(parsedBody, { abortEarly: false });
+    
     if (error) {
       LOGGER.error(reqId, componentName, `Invalid request body`, error);
       const err = {
@@ -38,8 +39,7 @@ export const handler = async (event) => {
       if (user.length === 0) {
         return sendResponse(reqId, 404, 'User not found');
       }
-    
-  
+
 
     // Get the existing school data from the database
     const [rows] = await dbExecuteQuery(
@@ -82,17 +82,18 @@ export const handler = async (event) => {
       LOGGER.info(reqId, componentName, 'Response from S3 :: ', s3Response);
 
       //Delete Old Image
-      const deleteParams = {
-        Bucket: SWIIRL_SCHOOL_BUCKET,
-        Key: schoolData.imageKey,
-      };
-      const s3ResponseDelete = await s3.deleteObject(deleteParams).promise();
-      
-      LOGGER.error(reqId, componentName, `S3 Response Delete`, {
-        message: "S3 Response: Delete Old Picture",
-        data: s3ResponseDelete,
-      });
-
+      if(schoolData.imageKey){
+        const deleteParams = {
+          Bucket: SWIIRL_SCHOOL_BUCKET,
+          Key: schoolData.imageKey,
+        };
+        const s3ResponseDelete = await s3.deleteObject(deleteParams).promise();
+        
+        LOGGER.error(reqId, componentName, `S3 Response Delete`, {
+          message: "S3 Response: Delete Old Picture",
+          data: s3ResponseDelete,
+        });
+      }
     }
 
     // Update the school data in the database
