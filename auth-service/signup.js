@@ -45,46 +45,52 @@ export const handler = async (event) => {
       const hashedPassword = await bcrypt.hash(body['password'], 10);
       const customSchoolId = nanoid();
 
-
-    // validate request body,
-    const { error, value } = await signupSchema.validate(body, { abortEarly: false });
-    if (error) {
-      LOGGER.error(reqId, componentName, `Invalid request body`, error);
-      const err = {
-        message: `Invalid request body`,
-        body: error
-      };
-      return sendResponse(reqId, 400, err);
-    }
-
-    // validating if email already exists in the database
-    if (body['emailId']) {
-      const [res] = await dbExecuteQuery('SELECT * FROM user WHERE emailId = ?',[body['emailId']])
-      if (res?.emailId) {
-        return sendResponse(reqId, 400, { message: 'User already exists' });
+      // Validate request body
+      const { error, value } = await signupSchema.validate(body, { abortEarly: false });
+      if (error) {
+        LOGGER.error(reqId, componentName, `Invalid request body`, error);
+        const err = {
+          message: `Invalid request body`,
+          body: error
+        };
+        return sendResponse(reqId, 400, err);
       }
-    }
 
-    if(body['createSchool']==='true'){
-      const insertQuery = `INSERT INTO school(id,district,name,createdBy,status) VALUES (?,?,?,?,?);`
-      const insertValues = [customSchoolId,body['districtName'],body['schoolName'],itemId,'active'] 
+      // Validating if email already exists in the database
+      if (body['emailId']) {
+        const [res] = await dbExecuteQuery('SELECT * FROM user WHERE emailId = ?',[body['emailId']])
+        if (res?.emailId) {
+          return sendResponse(reqId, 400, { message: 'User already exists' });
+        }
+      }
+
+      if(body['createSchool']==='true'){
+        const schoolDistrict = body['districtName'].trim()
+        const schoolName = body['schoolName'].trim()
+        const [getSchoolQuery] = await dbExecuteQuery('SELECT * FROM school WHERE LOWER(name) = LOWER(?) AND LOWER(district)=LOWER(?)',[schoolName,schoolDistrict])
+            
+        if(getSchoolQuery && getSchoolQuery.name){
+            return sendResponse(reqId, 400, { message: 'School already exists. Choose from dropdown.'});      
+        }
+        
+        const insertQuery = `INSERT INTO school(id,district,name,createdBy,status) VALUES (?,?,?,?,?);`
+        const insertValues = [customSchoolId,body['districtName'],body['schoolName'],itemId,'active'] 
+        const result = await dbExecuteQuery(insertQuery,insertValues);
+        LOGGER.info(reqId, componentName, 'Response from DB :: ', result);
+        LOGGER.info(reqId, componentName, `School Created By : ${body['firstname']}-${body['lastname']}`);
+      }
+
+      const schoolId = body['createSchool']==='true'?customSchoolId:body['schoolId'];
+      const insertQuery = `INSERT INTO user(id,firstName,lastName,emailId,schoolId,password,loginType,status) VALUES (?,?,?,?,?,?,'default','active');`
+      const insertValues = [itemId,body['firstname'],body['lastname'],body['emailId'],schoolId,hashedPassword]
+
+      //If not, inserting user data in the database
       const result = await dbExecuteQuery(insertQuery,insertValues);
       LOGGER.info(reqId, componentName, 'Response from DB :: ', result);
-      LOGGER.info(reqId, componentName, `School Created By : ${body['firstname']}-${body['lastname']}`);
 
-    }
+      const token = generateToken(itemId,body['emailId']);
 
-    const schoolId = body['createSchool']==='true'?customSchoolId:body['schoolId'];
-    const insertQuery = `INSERT INTO user(id,firstName,lastName,emailId,schoolId,password,loginType,status) VALUES (?,?,?,?,?,?,'default','active');`
-    const insertValues = [itemId,body['firstname'],body['lastname'],body['emailId'],schoolId,hashedPassword]
-
-    //If not, inserting user data in the database
-    const result = await dbExecuteQuery(insertQuery,insertValues);
-    LOGGER.info(reqId, componentName, 'Response from DB :: ', result);
-
-    const token = generateToken(itemId,body['emailId']);
-
-    return sendResponse(reqId, 200, { message: 'Account created successfully!', data: { id: itemId, token: token } });
+      return sendResponse(reqId, 200, { message: 'Account created successfully!', data: { id: itemId, token: token } });
 
     }  
   } catch (error) {

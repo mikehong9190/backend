@@ -32,30 +32,33 @@ export const handler = async (event) => {
       const [res] = await dbExecuteQuery('SELECT loginType FROM user WHERE id = ?',[body['id']])
       if (res?.loginType==='google') {
         const customSchoolId = nanoid()
+        
         if(body['createSchool']==='true'){
+            const schoolDistrict = body['districtName'].trim()
+            const schoolName = body['schoolName'].trim()
+            const [getSchoolQuery] = await dbExecuteQuery('SELECT * FROM school WHERE LOWER(name) = LOWER(?) AND LOWER(district)=LOWER(?)',[schoolName,schoolDistrict])
+            if(getSchoolQuery && getSchoolQuery.name){
+              return sendResponse(reqId, 400, { message: 'School already exists. Choose from dropdown.'});      
+            }
             const insertQuery = `INSERT INTO school(id,district,name,status) VALUES (?,?,?,?);`
-            const insertValues = [customSchoolId,body['districtName'],body['schoolName'],'active'] 
+            const insertValues = [customSchoolId,schoolDistrict,schoolName,'active'] 
             const result = await dbExecuteQuery(insertQuery,insertValues);
             LOGGER.info(reqId, componentName, 'Response from DB :: ', result);
-          }
+            }
       
-          const schoolId = body['createSchool']==='true'?customSchoolId:body['schoolId'];
-          const insertQuery = `UPDATE user SET schoolId = ? WHERE id = ?;`
-          const insertValues = [schoolId,body['id']]
-      
-          const result = await dbExecuteQuery(insertQuery,insertValues);
-          LOGGER.info(reqId, componentName, 'Response from DB :: ', result);
-          return sendResponse(reqId, 200, { message: 'School Details Added Successfully!'});
+            const schoolId = body['createSchool']==='true'?customSchoolId:body['schoolId'];
+            const insertQuery = `UPDATE user SET schoolId = ? WHERE id = ?;`
+            const insertValues = [schoolId,body['id']]
+        
+            const result = await dbExecuteQuery(insertQuery,insertValues);
+            LOGGER.info(reqId, componentName, 'Response from DB :: ', result);
+            return sendResponse(reqId, 200, { message: 'School Details Added Successfully!'});
 
       }
       else{
-        return sendResponse(reqId, 400, { message: 'Cannot update Details, please try again later'});
-         
+        return sendResponse(reqId, 400, { message: 'Cannot update Details, please try again later'});        
       }
     }
-
-
-  
   } catch (error) {
     LOGGER.error(reqId, componentName, 'Exception raised :: ', error);
     return sendResponse(reqId, 500, {
