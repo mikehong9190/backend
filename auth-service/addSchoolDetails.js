@@ -32,21 +32,26 @@ export const handler = async (event) => {
       const [res] = await dbExecuteQuery('SELECT loginType FROM user WHERE id = ?',[body['id']])
       if (res?.loginType==='google') {
         const customSchoolId = nanoid()
+        let givenSchoolId = ''
         
         if(body['createSchool']==='true'){
             const schoolDistrict = body['districtName'].trim()
             const schoolName = body['schoolName'].trim()
             const [getSchoolQuery] = await dbExecuteQuery('SELECT * FROM school WHERE LOWER(name) = LOWER(?) AND LOWER(district)=LOWER(?)',[schoolName,schoolDistrict])
+            
             if(getSchoolQuery && getSchoolQuery.name){
-              return sendResponse(reqId, 400, { message: 'School already exists. Choose from dropdown.'});      
+              // return sendResponse(reqId, 400, { message: 'School already exists. Choose from dropdown.'}); 
+              givenSchoolId=getSchoolQuery.id
             }
-            const insertQuery = `INSERT INTO school(id,district,name,status) VALUES (?,?,?,?);`
-            const insertValues = [customSchoolId,schoolDistrict,schoolName,'active'] 
-            const result = await dbExecuteQuery(insertQuery,insertValues);
-            LOGGER.info(reqId, componentName, 'Response from DB :: ', result);
+            else{
+              const insertQuery = `INSERT INTO school(id,district,name,status) VALUES (?,?,?,?);`
+              const insertValues = [customSchoolId,schoolDistrict,schoolName,'active'] 
+              const result = await dbExecuteQuery(insertQuery,insertValues);
+              LOGGER.info(reqId, componentName, 'Response from DB :: ', result);
+              }
             }
       
-            const schoolId = body['createSchool']==='true'?customSchoolId:body['schoolId'];
+            const schoolId = body['createSchool']==='true' && !givenSchoolId.length?customSchoolId:givenSchoolId.length?givenSchoolId:body['schoolId'];
             const insertQuery = `UPDATE user SET schoolId = ? WHERE id = ?;`
             const insertValues = [schoolId,body['id']]
         

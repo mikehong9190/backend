@@ -44,6 +44,7 @@ export const handler = async (event) => {
     else{
       const hashedPassword = await bcrypt.hash(body['password'], 10);
       const customSchoolId = nanoid();
+      let givenSchoolId = ''
 
       // Validate request body
       const { error, value } = await signupSchema.validate(body, { abortEarly: false });
@@ -70,17 +71,18 @@ export const handler = async (event) => {
         const [getSchoolQuery] = await dbExecuteQuery('SELECT * FROM school WHERE LOWER(name) = LOWER(?) AND LOWER(district)=LOWER(?)',[schoolName,schoolDistrict])
             
         if(getSchoolQuery && getSchoolQuery.name){
-            return sendResponse(reqId, 400, { message: 'School already exists. Choose from dropdown.'});      
+            // return sendResponse(reqId, 400, { message: 'School already exists. Choose from dropdown.'});
+            givenSchoolId=getSchoolQuery.id      
         }
-        
-        const insertQuery = `INSERT INTO school(id,district,name,createdBy,status) VALUES (?,?,?,?,?);`
-        const insertValues = [customSchoolId,body['districtName'],body['schoolName'],itemId,'active'] 
-        const result = await dbExecuteQuery(insertQuery,insertValues);
-        LOGGER.info(reqId, componentName, 'Response from DB :: ', result);
-        LOGGER.info(reqId, componentName, `School Created By : ${body['firstname']}-${body['lastname']}`);
+        else{
+          const insertQuery = `INSERT INTO school(id,district,name,createdBy,status) VALUES (?,?,?,?,?);`
+          const insertValues = [customSchoolId,body['districtName'],body['schoolName'],itemId,'active'] 
+          const result = await dbExecuteQuery(insertQuery,insertValues);
+          LOGGER.info(reqId, componentName, 'Response from DB :: ', result);
+          LOGGER.info(reqId, componentName, `School Created By : ${body['firstname']}-${body['lastname']}`);
+        }          
       }
-
-      const schoolId = body['createSchool']==='true'?customSchoolId:body['schoolId'];
+      const schoolId = body['createSchool']==='true' && !givenSchoolId.length?customSchoolId:givenSchoolId.length?givenSchoolId:body['schoolId'];
       const insertQuery = `INSERT INTO user(id,firstName,lastName,emailId,schoolId,password,loginType,status) VALUES (?,?,?,?,?,?,'default','active');`
       const insertValues = [itemId,body['firstname'],body['lastname'],body['emailId'],schoolId,hashedPassword]
 
