@@ -33,7 +33,7 @@ export const handler = async (event) => {
         }
         else{
           const insertQuery = `INSERT INTO user(id,firstname,lastname,emailId,profilePictureKey,loginType,status) VALUES (?,?,?,?,?,'google','active');`
-          const insertValues = [itemId,user.given_name,user.family_name,user.email,user.picture]
+          const insertValues = [itemId,user?.given_name || '',user?.family_name || '',user.email,user.picture]
           const result = await dbExecuteQuery(insertQuery,insertValues);
           LOGGER.info(reqId, componentName, 'Response from DB :: ', result);
           const token = generateToken(itemId,user.email);
