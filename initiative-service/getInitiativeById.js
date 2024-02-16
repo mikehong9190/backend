@@ -27,6 +27,7 @@ export const handler = async (event) => {
     }
 
     // Get user's initiatives
+    await dbExecuteQuery(`SET SESSION group_concat_max_len = 10000000000000000;`);
     const initiative = await dbExecuteQuery(
       `
       SELECT i.id ,i.target,i.initiativeTypeId, i.numberOfStudents,i.grade, i.name, GROUP_CONCAT(img.imageKey) AS images
