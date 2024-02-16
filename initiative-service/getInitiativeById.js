@@ -28,7 +28,8 @@ export const handler = async (event) => {
 
     // Get user's initiatives
     const initiative = await dbExecuteQuery(
-      `SELECT i.id ,i.target,i.initiativeTypeId, i.numberOfStudents,i.grade, i.name, GROUP_CONCAT(img.imageKey) AS images
+      `SET SESSION group_concat_max_len = 10000000000000000;
+      SELECT i.id ,i.target,i.initiativeTypeId, i.numberOfStudents,i.grade, i.name, GROUP_CONCAT(img.imageKey) AS images
       FROM initiative AS i
       LEFT JOIN image AS img ON i.id = img.initiativeId
       WHERE i.id=?`, id
